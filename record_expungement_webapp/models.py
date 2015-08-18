@@ -1,8 +1,9 @@
-# from django.db import models
+from django.db import models
 
 
-class Name:
+class Name(models.Model):
     def __init__(self, first, middle, last):
+        super(Name, self).__init__()
         self.first = first
         self.middle = middle  # optional
         self.last = last
@@ -55,77 +56,87 @@ class IncarcerationType:
     JAIL = "jail"
 
 
-class Incarceration:
+class Incarceration(models.Model):
     def __init__(self):
+        super(Incarceration, self).__init__()
         self.type = None  # IncarcerationType
         self.duration = None  # datetime.timedelta
 
 
 # Not all of these should be
-class Sentence:
+class Sentence(models.Model):
     def __init__(self):
+        super(Sentence, self).__init__()
         self.probation_duration = None  # optionally, datetime.timedelta
         self.incarceration = None  # optionally, Incarceration
         self.fine = None  # bool - If a fine exists, can't determine if a declaration is needed (need to know if
 
 
 # I.e. the court decision
-class Disposition:
+class Disposition(models.Model):
     def __init__(self):
+        super(Disposition, self).__init__()
         self.disposition_decision = None  # DispositionDecision
         self.conviction_status = None  # TypeOfCrime
 
 
-class ProbationModification:
+class ProbationModification(models.Model):
     def __init__(self):
+        super(ProbationModification, self).__init__()
         self.type = None  # Either MODIFIED/EXTENDED or REINSTATED
         self.date = None  # datetime.date
         self.new_duration = None  # datetime.timedelta
         self.description = None  # String, i.e. "6 MS PROB TERMINATES ON RLSE, 6 MS JL CS"
 
 
-class Offense:
+class Offense(models.Model):
     def __init__(self):
+        super(Offense, self).__init__()
         self.offesnse_code = None  # String - HS or VC
         self.offense_id = None  # i.e. "11352" or "11377(A)"
         self.offense_description = None  # i.e. "TRANSPORT/SELL NARCOTIC/CNTL SUB"
         self.eligible_for_reduction = None  # bool TODO - FIX THIS TO REFLECT THAT FELONIES CAN SOMETIMES BE DISMISSED
 
 
-class Count:
+class Count(models.Model):
     def __init__(self):
+        super(Count, self).__init__()
         self.offense = None  # Offense
         self.disposition = None  # Disposition
         self.needs_declaration_reasons = []  # List of NeedDeclarationReason
         self.ineligible_for_expungement_reasons = []  # list of IneligibilityReason
 
 
-class ArrestInfo:
+class ArrestInfo(models.Model):
     def __init__(self):
+        super(ArrestInfo, self).__init__()
         self.arrest_id = None  # Next to CNT001
         self.name_as_charged_id = None  # Index in the names_as_charged list
         self.date = None  # datetime.date
         self.city = None  # String
 
 
-class CaseInfo:
+class CaseInfo(models.Model):
     def __init__(self):
+        super(CaseInfo, self).__init__()        
         self.case_id = None  # String, i.e. NM239120A
         self.county = None  # String
         self.counts = []  # List of Count
         self.sentence = None  # optionally, Sentence - if any of the counts were CONVICTED
 
 
-class Event:
+class Event(models.Model):
     def __init__(self):
+        super(Event, self).__init__()
         self.arrest_info = None  # ArrestInfo
         self.case_info = None  # CaseInfo
         self.probation_modifications = []  # List ProbationModification
         self.listed_dob = None  # datetime.date
 
 
-class RAPSheet:
+class RAPSheet(models.Model):
     def __init__(self):
+        super(RAPSheet, self).__init__()
         self.names_as_charged = []  # map of number (i.e. 001) to Name
         self.dob = None  # datetime.date - NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
         self.sex = None  # M/F
