@@ -134,7 +134,6 @@ class CaseInfo:
 
 class Event:
     def __init__(self):
-        super(Event, self).__init__()
         self.arrest_info = None  # ArrestInfo
         self.case_info = None  # CaseInfo
         self.probation_modifications = []  # List ProbationModification
@@ -143,7 +142,6 @@ class Event:
 
 class RAPSheet:
     def __init__(self):
-        super(RAPSheet, self).__init__()
         self.names_as_charged = []  # map of number (i.e. 001) to Name
         self.dob = None  # datetime.date - NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
         self.sex = None  # M/F
