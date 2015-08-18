@@ -1,0 +1,40 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
+
+<h4>
+  File uploaded
+</h4>
+<p>
+  File name: {{ filename }}<br/>
+  File size: {{ filesize }}
+</p>
+<p>
+  <h5>Names</h5>
+  {% for num, name in rap_sheet.names_as_charged.items %}
+    <p>
+      {{ num }} {{ name }}
+    </p>
+  {% endfor %}
+</p>
+
+<div>
+  <h3>Personal info</h3>
+  <form action="{% url 'submit_personal_info' %}" method="post">
+    {% csrf_token %}
+      <h5>Events</h5>
+
+      {% for event, waiver_field in info_form.waiver_fields %}
+        <p>
+        {{event.case_info.case_id}} {{waiver_field}}
+        </p>
+      {% endfor %}
+
+    <p>
+      {{ info_form.email }}
+    </p>
+    <p>
+      <input type="submit" value="Submit info" />
+    </p>
+  </form>
+</div>

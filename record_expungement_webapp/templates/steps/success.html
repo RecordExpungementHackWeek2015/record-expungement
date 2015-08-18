@@ -1,0 +1,14 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
+
+<h3>Success</h3>
+
+<p>
+  <form action="{% url 'download_forms' %}" method="post">
+    {% csrf_token %}
+    <p>
+      <input type="submit" value="Download forms"/>
+    </p>
+  </form>
+</p>

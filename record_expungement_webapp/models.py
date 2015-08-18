@@ -118,7 +118,7 @@ class ArrestInfo(models.Model):
 
 class CaseInfo(models.Model):
     def __init__(self):
-        super(CaseInfo, self).__init__()        
+        super(CaseInfo, self).__init__()
         self.case_id = None  # String, i.e. NM239120A
         self.county = None  # String
         self.counts = []  # List of Count
@@ -134,12 +134,11 @@ class Event(models.Model):
         self.listed_dob = None  # datetime.date
 
 
-class RAPSheet(models.Model):
-    def __init__(self):
-        super(RAPSheet, self).__init__()
-        self.names_as_charged = []  # map of number (i.e. 001) to Name
-        self.dob = None  # datetime.date - NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
-        self.sex = None  # M/F
+class RAPSheet:
+    def __init__(self, names_as_charged):
+        self.names_as_charged = names_as_charged  # map of number (i.e. 001) to Name
+        self.dob = None  # datetime.date
+        self.sex = None # M/F
         self.events = []  # list of Event
         self.needs_declaration = None
 

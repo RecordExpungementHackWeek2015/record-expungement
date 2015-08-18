@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
+
+<script src="{% static "record_expungement_webapp/jquery-1.11.3.js" %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+  $("#spinner").bind("ajaxSend", function() {
+  $(this).show();
+  }).bind("ajaxStop", function() {
+  $(this).hide();
+  }).bind("ajaxError", function() {
+  $(this).hide();
+  });
+  });
+  $(document).ready(function(){
+  $('#button-upload').click(function() {
+  $('#spinner').show();
+  });
+  });
+</script>
+
+<h3>Upload file</h3>
+
+<p>
+  <form action="{% url 'upload_rap_sheet' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ doc_form.non_field_errors }}
+    <p>
+      {{ doc_form.docfile.errors }}
+      {{ doc_form.docfile }}
+    </p>
+    <p>
+      <input type="submit" value="Upload photo" id="button-upload"/>
+    </p>
+  </form>
+</p>
+
+<p id="spinner" style="display: none;">
+  <img id="img-spinner" src="{% static "record_expungement_webapp/ajax-loader.gif" %}" alt="Uploading"/>
+</p>
