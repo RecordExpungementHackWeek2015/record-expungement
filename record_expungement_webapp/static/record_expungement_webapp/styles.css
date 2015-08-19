@@ -77,3 +77,31 @@ form {
   padding: 0;
   margin: 0;
 }
+
+.indent-1 {
+    padding: 0 2em;
+}
+
+.event {
+    padding-top: 1em;
+    padding-left: 2em;
+}
+
+.case {
+    padding-left: 2em;
+}
+
+.count {
+    padding-left: 2em;
+}
+
+.eligibility {
+    font-weight: bold;
+}
+.top-level-section {
+    margin: 2em 0em;
+}
+
+input[type=submit] {
+    font-size: 2em;
+}

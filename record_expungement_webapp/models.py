@@ -163,6 +163,10 @@ class Count:
         # FILL_ME_IN_LATER
         self.ineligible_for_expungement_reasons = []  # list of IneligibilityReason
 
+    # List reasons
+    def is_eligible_for_expungement(self):
+        return not self.ineligible_for_expungement_reasons
+
 
 class ArrestInfo:
     def __init__(self, arrest_id, name_as_charged_id, date, city):
@@ -210,6 +214,9 @@ class Event:
         # FILL_ME_IN_LATER
         self.needs_declaration_reasons = []  # List of NeedDeclarationReason
 
+    # Display star next to event. List out reasons.
+    def needs_declaration(self):
+        return bool(self.needs_declaration_reasons)
 
 class RAPSheet:
     def __init__(self, names_as_charged, dob, sex, events):
@@ -223,6 +230,12 @@ class RAPSheet:
         self.dob = dob  # NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
         self.sex = sex  # M/F
         self.events = events  # list of Event
+
+    # If True, display warning at top
+    def needs_declaration(self):
+        if self.events == None:
+            return False
+        return any(event.needs_declaration for event in self.events)
 
 
 # OTHER PERSONAL INFORMATION

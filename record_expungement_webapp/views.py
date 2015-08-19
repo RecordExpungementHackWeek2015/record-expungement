@@ -120,6 +120,8 @@ def submit_personal_info(request):
     if request.method == 'POST':
         info_form = PersonalInfoForm(request.POST, events=rap_sheet.events)
         if info_form.is_valid():
+            for item in info_form.cleaned_data.items():
+                print item
             return HttpResponseRedirect('/webapp/success')
     else:
         info_form = PersonalInfoForm(events=rap_sheet.events)
@@ -136,8 +138,6 @@ def submit_personal_info(request):
 
 # Render the success page with a button to download.
 def success(request):
-    # provide button to download the pdf
-    # del session vars somewhere
     context = RequestContext(request, {})
     return render(request, 'steps/success.html', context)
 

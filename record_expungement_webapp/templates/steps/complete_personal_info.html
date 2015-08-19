@@ -2,49 +2,117 @@
 
 <link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
 
-<h4>
-  File uploaded
-</h4>
-<p>
+<h2>
+  Your file was uploaded successfully.
+</h2>
+<div>
   File name: {{ filename }}<br/>
   File size: {{ filesize }}
-</p>
-<p>
-  <h5>Names</h5>
-  {% for name in rap_sheet.names_as_charged %}
-    <p>
-      {{ name }}
-    </p>
-  {% endfor %}
-</p>
-
-<div>
-  <h3>Personal info</h3>
-  <form action="{% url 'submit_personal_info' %}" method="post">
-    {% csrf_token %}
-    {{ info_form.non_field_errors }}
-
-    <h5>Events</h5>
-
-      {% for event, waiver_field in info_form.waiver_fields %}
-        <p>
-        {{ event.arrest_info.arrest_id }}
-        {{ event.arrest_info.date }}
-        {{ event.arrest_info.city }}
-
-        {{ waiver_field.errors }}
-        {% for case_info in event.associated_cases %}
-          {{ case_info.case_id }} {{ waiver_field }}
-        {% endfor %}
-        </p>
-      {% endfor %}
-
-    <p>
-      {{ info_form.email.errors }}
-      {{ info_form.email }}
-    </p>
-    <p>
-      <input type="submit" value="Submit info" />
-    </p>
-  </form>
 </div>
+
+<div class="top-level-section">
+  <h3>Primary info</h3>
+  <div class="indent-1">
+    <div>
+      DOB: {{ rap_sheet.dob|date:"SHORT_DATE_FORMAT" }} Sex: {{ rap_sheet.sex }}
+    </div>
+
+    {% for name in rap_sheet.names_as_charged %}
+      <div class="name">
+        {{ name }}
+      </div>
+    {% endfor %}
+  </div>
+</div><!-- end primary info -->
+
+<form action="{% url 'submit_personal_info' %}" method="post">
+  {% csrf_token %}
+  {{ info_form.non_field_errors }}
+
+  <div class="top-level-section">
+    <h3>Events</h3>
+    {% for event, waiver_field in info_form.waiver_fields %}
+      <div class="indent-1 event">
+        {% if event.needs_declaration %}
+        Needs declaration
+          {% for reason in event.needs_declaration_reasons %}
+            {{ reason }}
+          {% endfor %}
+        {% endif %}
+        <div>Arrest ID: {{ event.arrest_info.arrest_id }}</div>
+        <div>Date: {{ event.arrest_info.date|date:"SHORT_DATE_FORMAT" }}</div>
+        <div>City: {{ event.arrest_info.city }}</div>
+        <div>Listed DOB: {{ event.listed_dob|date:"SHORT_DATE_FORMAT"}}</div>
+        {{ waiver_field.errors }}
+        Fees waived before? {{ waiver_field }}
+
+        {% for case_info in event.associated_cases %}
+          <div class="case">
+            <div>Case ID: {{ case_info.case_id }}</div>
+            <div>Date: {{ case_info.date|date:"SHORT_DATE_FORMAT" }}</div>
+            <div>County: {{ case_info.county }}</div>
+            <div>Counts:
+              {% for count in case_info.counts %}
+                <div class="count">
+                  <div class="eligibility">
+                    Eligible for expungement?
+                    {% if count.is_eligible_for_expungement %}
+                      Yes
+                    {% else %}
+                      No
+                    {% endif %}
+                  </div>
+                  <div>
+                    {{ count.offense.code }} {{ count.offense.offense_id }} {{ count.offense.description }}
+                  </div>
+                  <div>
+                    {{ count.disposition.disposition_decision }}
+                    {% if count.disposition.crime_category %}
+                      {{ count.disposition.crime_category }}
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <div>
+              Sentence:
+              <div class="indent-1">
+                {% if case_info.sentence.probation_duration %}
+                  <div>
+                    Probation: {{ case_info.sentence.probation_duration.days }} days
+                  </div>
+                {% endif %}
+                {% if case_info.sentence.incarceration %}
+                  <div>
+                    Incarceration:
+                    {{ case_info.sentence.incarceration.type|capfirst }}
+                    {{ case_info.sentence.incarceration.duration.days }} days
+                  </div>
+                {% endif %}
+                {% if case_info.sentence.fine %}
+                  <div>
+                    Fine: Yes
+                  </div>
+                {% endif %}
+                </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div> <!-- end events -->
+
+  <div class="top-level-section">
+    <h3>Personal Info</h3>
+    <div class="indent-1">
+      {{ info_form.email.errors }}
+      {{ info_form.email.label_tag }}
+      {{ info_form.email }}
+    </div>
+  </div><!-- end personal info -->
+
+  <div class="top-level-section">
+    <input type="submit" value="Submit info"/>
+  </div>
+</form>
+
