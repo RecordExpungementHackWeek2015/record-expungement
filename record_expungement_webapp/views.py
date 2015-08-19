@@ -62,8 +62,8 @@ def upload_rap_sheet(request):
             request.session['filesize'] = uploaded_file.size
 
             return HttpResponseRedirect('/webapp/complete_personal_info')
-        else:
-            doc_form = DocumentForm()
+    else:
+        doc_form = DocumentForm()
 
     context = RequestContext(request, {
         'doc_form': doc_form
@@ -106,12 +106,13 @@ def complete_personal_info(request):
 class PersonalInfoForm(forms.Form):
     email = forms.CharField(label='Email', max_length=100)
 
-    def __init__(self, events=[]):
-        super(PersonalInfoForm, self).__init__()
-        self.events = events
-        for i, e in enumerate(events):
+    def __init__(self, *args, **kwargs):
+        self.events = kwargs.pop('events')
+        super(PersonalInfoForm, self).__init__(*args, **kwargs)
+
+        for i, e in enumerate(self.events):
             field_name = 'waiver_%d' % i
-            self.fields[field_name] = forms.BooleanField(label=e)
+            self.fields[field_name] = forms.BooleanField(label=e, required=False)
 
     # Get zipped list of event to waiver field.
     def waiver_fields(self):
@@ -127,12 +128,11 @@ def submit_personal_info(request):
     filename, filesize, rap_sheet = _load_vars_from_session(request)
 
     if request.method == 'POST':
-        info_form = PersonalInfoForm(request.POST)
+        info_form = PersonalInfoForm(request.POST, events=rap_sheet.events)
         if info_form.is_valid():
-            # Maybe try generating form or other server-side validation here.
             return HttpResponseRedirect('/webapp/success')
-        else:
-            info_form = PersonalInfoForm()
+    else:
+        info_form = PersonalInfoForm(events=rap_sheet.events)
 
     template = loader.get_template('steps/complete_personal_info.html')
     context = RequestContext(request, {

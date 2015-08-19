@@ -22,15 +22,19 @@
   <h3>Personal info</h3>
   <form action="{% url 'submit_personal_info' %}" method="post">
     {% csrf_token %}
-      <h5>Events</h5>
+    {{ info_form.non_field_errors }}
+
+    <h5>Events</h5>
 
       {% for event, waiver_field in info_form.waiver_fields %}
         <p>
-        {{event.case_info.case_id}} {{waiver_field}}
+        {{ waiver_field.errors }}
+        {{ event.case_info.case_id }} {{ waiver_field }}
         </p>
       {% endfor %}
 
     <p>
+      {{ info_form.email.errors }}
       {{ info_form.email }}
     </p>
     <p>
