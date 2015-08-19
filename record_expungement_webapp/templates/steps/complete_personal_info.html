@@ -11,9 +11,9 @@
 </p>
 <p>
   <h5>Names</h5>
-  {% for num, name in rap_sheet.names_as_charged.items %}
+  {% for name in rap_sheet.names_as_charged %}
     <p>
-      {{ num }} {{ name }}
+      {{ name }}
     </p>
   {% endfor %}
 </p>
@@ -28,8 +28,14 @@
 
       {% for event, waiver_field in info_form.waiver_fields %}
         <p>
+        {{ event.arrest_info.arrest_id }}
+        {{ event.arrest_info.date }}
+        {{ event.arrest_info.city }}
+
         {{ waiver_field.errors }}
-        {{ event.case_info.case_id }} {{ waiver_field }}
+        {% for case_info in event.associated_cases %}
+          {{ case_info.case_id }} {{ waiver_field }}
+        {% endfor %}
         </p>
       {% endfor %}
 

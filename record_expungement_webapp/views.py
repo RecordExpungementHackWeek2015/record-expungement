@@ -1,6 +1,5 @@
 import cStringIO
 import pickle
-
 from django import forms
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -8,16 +7,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.template import RequestContext
 
-from record_expungement_webapp import models
-
-
-_MOCK_CASE_INFO1 = models.CaseInfo('case1', None, None, None)
-_MOCK_CASE_INFO2 = models.CaseInfo('case2', None, None, None)
-
-_MOCK_EVENT1 = models.Event(None, None, _MOCK_CASE_INFO1)
-_MOCK_EVENT2 = models.Event(None, None, _MOCK_CASE_INFO2)
-
-_MOCK_RAP_SHEET = models.RAPSheet({1: "Foo Bar"}, None, None, [_MOCK_EVENT1, _MOCK_EVENT2])
+from record_expungement_webapp import mocks
 
 
 # File upload form.
@@ -74,7 +64,7 @@ def upload_rap_sheet(request):
 def _process_rap_sheet(uploaded_file):
     for chunk in uploaded_file.chunks():
         pass
-    rap_sheet = _MOCK_RAP_SHEET
+    rap_sheet = mocks.RAP_SHEET_1
     return rap_sheet
 
 
