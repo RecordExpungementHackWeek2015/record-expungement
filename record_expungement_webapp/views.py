@@ -11,20 +11,13 @@ from django.template import RequestContext
 from record_expungement_webapp import models
 
 
-_MOCK_CASE_INFO1 = models.CaseInfo()
-_MOCK_CASE_INFO1.case_id = 'case 1'
+_MOCK_CASE_INFO1 = models.CaseInfo('case1', None, None, None)
+_MOCK_CASE_INFO2 = models.CaseInfo('case2', None, None, None)
 
-_MOCK_CASE_INFO2 = models.CaseInfo()
-_MOCK_CASE_INFO2.case_id = 'case 2'
+_MOCK_EVENT1 = models.Event(None, None, _MOCK_CASE_INFO1)
+_MOCK_EVENT2 = models.Event(None, None, _MOCK_CASE_INFO2)
 
-_MOCK_EVENT1 = models.Event()
-_MOCK_EVENT1.case_info = _MOCK_CASE_INFO1
-
-_MOCK_EVENT2 = models.Event()
-_MOCK_EVENT2.case_info = _MOCK_CASE_INFO2
-
-_MOCK_RAP_SHEET = models.RAPSheet({1: "Foo Bar"})
-_MOCK_RAP_SHEET.events = [_MOCK_EVENT1, _MOCK_EVENT2]
+_MOCK_RAP_SHEET = models.RAPSheet({1: "Foo Bar"}, None, None, [_MOCK_EVENT1, _MOCK_EVENT2])
 
 
 # File upload form.
