@@ -31,8 +31,7 @@ class IneligibilityReason:
 
     NOT_IN_SAN_MATEO_COUNTY = "not_in_san_mateo"
     PRISON_TIME_GRANTED = "prison_time_granted"
-    INELIGIBLE_FOR_EXPUNGMENT = "ineligible"
-    FELONY_CANNOT_BE_REDUCED = "felony_cannot_be_reduced"
+    OFFENSE_INELIGIBLE_FOR_EXPUNGMENT = "ineligible"
     PROBATION_NOT_PART_OF_SENTENCE = "probation_not_part_of_sentence"
 
 
@@ -40,7 +39,7 @@ class NeedsDeclarationReason:
     def __init__(self):
         raise NotImplementedError
 
-    FELONY_ELIGIBLE_FOR_REDUCTION = "felony_eligible_for_reduction"
+    OFFENSE_IS_A_FELONY = "offense_is_a_felony"
     PROBATION_VIOLATED = "probation_violated"
 
 
@@ -53,7 +52,7 @@ class DispositionDecision:
     DISMISSED = "dismissed"
 
 
-class TypeOfCrime:
+class CrimeCategory:
     def __init__(self):
         raise NotImplementedError
 
@@ -71,82 +70,89 @@ class IncarcerationType:
 
 
 class Incarceration:
-    def __init__(self):
-        self.type = None  # IncarcerationType
-        self.duration = None  # datetime.timedelta
+    def __init__(self, incarceration_type, duration):
+        self.type = incarceration_type  # IncarcerationType
+        self.duration = duration  # datetime.timedelta
 
 
 # Not all of these should be
 class Sentence:
-    def __init__(self):
-        self.probation_duration = None  # optionally, datetime.timedelta
-        self.incarceration = None  # optionally, Incarceration
-        self.fine = None  # bool - If a fine exists, can't determine if a declaration is needed (need to know if
+    def __init__(self, probation_duration, incarceration, fine):
+        assert probation_duration or incarceration or fine
+        self.probation_duration = probation_duration  # optionally, datetime.timedelta
+        self.incarceration = incarceration  # optionally, Incarceration
+        self.fine = fine  # bool - If a fine exists, can't determine if a declaration is needed
 
 
 # I.e. the court decision
 class Disposition:
-    def __init__(self):
-        self.disposition_decision = None  # DispositionDecision
-        self.conviction_status = None  # TypeOfCrime
+    def __init__(self, disposition_decision, crime_category):
+        self.disposition_decision = disposition_decision  # DispositionDecision
+        self.crime_category = crime_category  # CrimeCategory (called conviction status on the RAP sheet)
 
 
 class ProbationModification:
-    def __init__(self):
-        self.type = None  # Either MODIFIED/EXTENDED or REINSTATED
-        self.date = None  # datetime.date
-        self.new_duration = None  # datetime.timedelta
-        self.description = None  # String, i.e. "6 MS PROB TERMINATES ON RLSE, 6 MS JL CS"
+    def __init__(self, mod_type, date, new_duration, description):
+        self.type = mod_type  # Either MODIFIED/EXTENDED or REINSTATED
+        self.date = date  # datetime.date
+        self.new_duration = new_duration  # datetime.timedelta
+        self.description = description  # String, i.e. "6 MS PROB TERMINATES ON RLSE, 6 MS JL CS"
 
 
 class Offense:
-    def __init__(self):
-        self.offesnse_code = None  # String - HS or VC
-        self.offense_id = None  # i.e. "11352" or "11377(A)"
-        self.offense_description = None  # i.e. "TRANSPORT/SELL NARCOTIC/CNTL SUB"
+    def __init__(self, code, offense_id, description):
+        self.code = code  # String - HS or VC
+        self.offense_id = offense_id  # i.e. "11352" or "11377(A)"
+        self.description = description  # i.e. "TRANSPORT/SELL NARCOTIC/CNTL SUB"
+        
+        # FILL_ME_IN_LATER
         self.eligible_for_reduction = None  # bool
-        self.eligible_for_dismissal = None  # bool - is this crime on the list of crimes that can't be dismissed?
+        self.eligible_for_dismissal = None  # bool - is this on list of crimes that can't be dismissed?
 
 
 class Count:
-    def __init__(self):
-        self.offense = None  # Offense
-        self.disposition = None  # Disposition
-        self.needs_declaration_reasons = []  # List of NeedDeclarationReason
+    def __init__(self, offense, disposition):
+        self.offense = offense  # Offense
+        self.disposition = disposition  # Disposition
+        
+        # FILL_ME_IN_LATER
         self.ineligible_for_expungement_reasons = []  # list of IneligibilityReason
 
 
 class ArrestInfo:
-    def __init__(self):
-        self.arrest_id = None  # Next to CNT001
-        self.name_as_charged_id = None  # Index in the names_as_charged list
-        self.date = None  # datetime.date
-        self.city = None  # String
+    def __init__(self, arrest_id, name_as_charged_id, date, city):
+        self.arrest_id = arrest_id  # Next to CNT001
+        self.name_as_charged_id = name_as_charged_id  # Index in the names_as_charged list
+        self.date = date  # datetime.date
+        self.city = city  # String
 
 
 class CaseInfo:
-    def __init__(self):
-        self.case_id = None  # String, i.e. NM239120A
-        self.county = None  # String
-        self.counts = []  # List of Count
-        self.sentence = None  # optionally, Sentence - if any of the counts were CONVICTED
+    def __init__(self, case_id, date, county, counts, sentence=None):
+        self.case_id = case_id  # String, i.e. NM239120A
+        self.date = date  # datetime.date
+        self.county = county  # String
+        self.counts = counts  # [] List of Count
+        self.sentence = sentence  # optionally, Sentence - if any of the counts were CONVICTED
 
 
 class Event:
-    def __init__(self):
-        self.arrest_info = None  # ArrestInfo
-        self.case_info = None  # CaseInfo
-        self.probation_modifications = []  # List ProbationModification
-        self.listed_dob = None  # datetime.date
+    def __init__(self, arrest_info, listed_dob, case_info=None, probation_modifications=None):
+        self.arrest_info = arrest_info  # ArrestInfo
+        self.listed_dob = listed_dob  # datetime.date
+        self.case_info = case_info  # CaseInfo
+        self.probation_modifications = probation_modifications  # [] List ProbationModification
+        
+        # FILL_ME_IN_LATER
+        self.needs_declaration_reasons = []  # List of NeedDeclarationReason
 
 
 class RAPSheet:
-    def __init__(self):
-        self.names_as_charged = []  # map of number (i.e. 001) to Name
-        self.dob = None  # datetime.date - NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
-        self.sex = None  # M/F
-        self.events = []  # list of Event
-        self.needs_declaration = None
+    def __init__(self, names_as_charged, dob, sex, events):
+        self.names_as_charged = names_as_charged  # list of Name
+        self.dob = dob  # datetime.date - NOTE: The DOB on a criminal event TRUMPS this DOB if they are different
+        self.sex = sex  # M/F
+        self.events = events  # [] list of Event
 
 
 # OTHER PERSONAL INFORMATION
@@ -254,7 +260,7 @@ class FinancialInfo:
         self.total_family_income = None  # int - in dollars
 
         # FW001 Section 6
-        self.fees_have_been_waived_for_this_case_recently = None  # bool, annotated after the fact
+        self.event_index_to_whether_fees_have_been_waived_recently = {}  # int to bool
 
         # The info below is only filled out if
 
@@ -275,13 +281,13 @@ class FinancialInfo:
 
 
 class PersonalHistory:
-    def __init__(self, rap_sheet):
-        self.name = None  # Name
-        self.address = None  # Address
-        self.email = None  # String
-        self.phone_number = None  # String
-        self.financial_information = None  # FinancialInfo
+    def __init__(self, rap_sheet, name=None, address=None, email=None, phone_number=None, financial_info=None):
         self.rap_sheet = rap_sheet  # RAPSheet
+        self.name = name  # Name
+        self.address = address  # Address
+        self.email = email  # String
+        self.phone_number = phone_number  # String
+        self.financial_information = financial_info  # FinancialInfo
 
 # CLASSES FOR PDF GENERATION
 
@@ -309,7 +315,7 @@ class FW001Factory:
         raise ValueError("Don't construct me")
 
     @staticmethod
-    def generate(personal_history):
+    def generate(personal_history, event_index):
         raise NotImplementedError
 
 
@@ -332,31 +338,138 @@ class POS040Factory:
         raise NotImplementedError
 
 
+class IneligibleOffensesModel:
+    _INELIGIBLE_OFFENSES = {
+        "VC": ["42002.1", "2815", "22526(A)", "22526(B)"],
+        "PC": ["286(C)", "288", "288A SUBDIVISION (C)", "288.5", "289 SUBDIVISION (J)",
+               "311.1", "311.2", "311.3", "311.11"]
+    }
+
+    _INELIGIBLE_WITH_FELONY = {
+        "PC": ["261.5 SUBDIVISION(D)"]
+    }
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def offense_is_ineligible(offense_code, offense_id, type_of_crime):
+        if type_of_crime == CrimeCategory.INFRACTION:
+            return True
+        if offense_code in IneligibleOffensesModel._INELIGIBLE_OFFENSES:
+            if offense_id in IneligibleOffensesModel._INELIGIBLE_OFFENSES[offense_code]:
+                return True
+        if type_of_crime == CrimeCategory.FELONY \
+                and offense_code in IneligibleOffensesModel._INELIGIBLE_WITH_FELONY:
+            if offense_id in IneligibleOffensesModel._INELIGIBLE_WITH_FELONY[offense_code]:
+                return True
+        return False
+
+
+class WobblerOffensesModel:
+    _WOBBLERS = {
+        "PC": ["69", "71", "72", "76", "118.1", "136.1", "136.5", "136.7", "139", "142", "146a", "148(D)",
+               "148.1", "148.10", "149", "153", "168", "171b", "171c", "171d", "186.10", "192(C)(1)",
+               "192.5(A)", "219.2", "241.1", "241.4", "241.7", "243(C)(1)", "243.3", "243.4", "243.6",
+               "243.7", "243.9"],
+        "HS": ["11377", "11379.2", "11390", "11391"],
+        "VC": ["10851", "23152", "23153"]
+    }
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def offense_is_a_wobbler(offense_code, offense_id, type_of_crime):
+        assert type_of_crime == CrimeCategory.FELONY
+        if offense_code in WobblerOffensesModel._WOBBLERS:
+            return offense_id in WobblerOffensesModel._WOBBLERS[offense_code]
+
+
 class ExpungementLogicEngine:
     def __init__(self, personal_history):
         self.personal_history = personal_history
 
-    def __requires_declaration(self, index, event):
-        raise NotImplementedError
+    @classmethod
+    def _annotate_count_eligibility(cls, count):
+        o = count.offense
+        o.eligible_for_reduction = WobblerOffensesModel.offense_is_a_wobbler(o.code,
+                                                                             o.offense_id,
+                                                                             count.disposition.crime_category)
+        o.eligible_for_dismissal = not IneligibleOffensesModel.offense_is_ineligible(o.code,
+                                                                                     o.offense_id,
+                                                                                     count.disposition.crime_category)
+
+        if not o.eligible_for_dismissal:
+            count.ineligible_for_expungement_reasons.append(IneligibilityReason.OFFENSE_INELIGIBLE_FOR_EXPUNGMENT)
+
+    @classmethod
+    def _get_final_probation_period(cls, event):
+        if not len(event.probation_modifications):
+            return event.case_info.date + 1, event.case_info.sentence.probation_duration
+
+        probation_modification = event.probation_modifications[-1]
+        return probation_modification.date, probation_modification.new_duration
+
+    def _violated_probation(self, event):
+        (start_date, time_delta) = self._get_final_probation_period(event)
+
+        for event in self.personal_history.rap_sheet.events:
+            if start_date <= event.arrest_info.date < start_date + time_delta:
+                return True
+
+        return False
+
+    def _annotate_ineligibility(self):
+        for event in self.personal_history.rap_sheet.events:
+            if event.case_info:
+                for count in event.case_info.counts:
+                    if count.disposition.disposition_decision == DispositionDecision.CONVICTED:
+                        self._annotate_count_eligibility(count)
+
+                event_ineligibility_reasons = []
+                if event.case_info.county != "SAN MATEO":
+                    event_ineligibility_reasons.append(IneligibilityReason.NOT_IN_SAN_MATEO_COUNTY)
+                if not event.case_info.sentence.probation_duration:
+                    event_ineligibility_reasons.append(IneligibilityReason.PROBATION_NOT_PART_OF_SENTENCE)
+                incarceration = event.case_info.sentence.incarceration
+                if incarceration and incarceration == IncarcerationType.PRISON:
+                    event_ineligibility_reasons.append(IneligibilityReason.PRISON_TIME_GRANTED)
+
+                for count in event.case_info.counts:
+                    count.ineligible_for_expungement_reasons.extend(event_ineligibility_reasons)
+
+    def _annotate_needs_declarations(self):
+        for event_index, event in enumerate(self.personal_history.rap_sheet.events):
+            if event.case_info:
+                includes_felony = False
+                for count in event.case_info.counts:
+                    if count.disposition.disposition_decision == DispositionDecision.CONVICTED:
+                        if count.disposition.crime_category == CrimeCategory.FELONY:
+                            includes_felony = True
+                if includes_felony:
+                    event.needs_declaration_reasons.append(NeedsDeclarationReason.OFFENSE_IS_A_FELONY)
+
+                if event.case_info.sentence:
+                    if self._violated_probation(event):
+                        event.needs_declaration_reasons.append(NeedsDeclarationReason.PROBATION_VIOLATED)
 
     # Annotates the rap sheet model with which charges need declarations and which ones we
     # can't generate forms for
     def annotate_rap_sheet(self):
-        self.personal_history.rap_sheet.needs_declaration = False
-        for index, event in enumerate(self.personal_history.rap_sheet.events):
-            assert isinstance(event, Event)
-            if self.__requires_declaration(index, event):
-                event.needs_declaration = True
-                self.personal_history.rap_sheet.needs_declaration = True
+        self._annotate_ineligibility()
+        self._annotate_needs_declarations()
 
-    def update_personal_information(self):
+        # TODO: Create some sort of summary?
+
+    def update_financial_information(self, financial_information):
         assert isinstance(self.personal_history, PersonalHistory)
-        # self.personal_history.financial_information = ???
+        self.personal_history.financial_information = financial_information
 
     def generate_expungement_packets(self):
         for event_index, event in enumerate(self.personal_history.rap_sheet.events):
             CR180Factory.generate(self.personal_history, event_index)
             CR181Factory.generate(self.personal_history, event_index)
-            FW001Factory.generate(self.personal_history)
+            FW001Factory.generate(self.personal_history, event_index)
             FW003Factory.generate(self.personal_history)
             POS040Factory.generate(self.personal_history, event_index)
