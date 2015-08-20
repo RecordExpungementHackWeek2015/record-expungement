@@ -156,10 +156,14 @@ class PersonalInfoForm(forms.Form):
     wage_earner_relationship_4 = forms.CharField(label='Relationship', max_length=50, required=False)
     wage_earner_amount_4 = forms.CharField(label='Amount', max_length=10, required=False)
 
+    cash = forms.CharField(label='Cash', max_length=10, required=False)
+
     name_amount_1_bank_1 = forms.CharField(label='', max_length=100, required=False)
     name_amount_2_bank_1 = forms.CharField(label='', max_length=10, required=False)
     name_amount_1_bank_2 = forms.CharField(label='', max_length=100, required=False)
     name_amount_2_bank_2 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_bank_3 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_bank_3 = forms.CharField(label='', max_length=10, required=False)
 
     asset_1_vehicle_1 = forms.CharField(label='', max_length=100, required=False)
     asset_2_vehicle_1 = forms.CharField(label='', max_length=10, required=False)
@@ -167,6 +171,9 @@ class PersonalInfoForm(forms.Form):
     asset_1_vehicle_2 = forms.CharField(label='', max_length=100, required=False)
     asset_2_vehicle_2 = forms.CharField(label='', max_length=10, required=False)
     asset_3_vehicle_2 = forms.CharField(label='', max_length=10, required=False)
+    asset_1_vehicle_3 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_vehicle_3 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_vehicle_3 = forms.CharField(label='', max_length=10, required=False)
 
     asset_1_real_estate_1 = forms.CharField(label='', max_length=100, required=False)
     asset_2_real_estate_1 = forms.CharField(label='', max_length=10, required=False)
@@ -260,7 +267,57 @@ class PersonalInfoForm(forms.Form):
         return financial_info
 
     def _get_money_and_property(self):
-        pass
+        total_cash = self.cleaned_data['cash']
+
+        bank_accounts = []
+        for i in (1, 2, 3):
+            bank_account = models.BankAccount()
+            bank_account.bank_name = self.cleaned_data['name_amount_1_bank_%d' % i]
+            bank_account.amount = self.cleaned_data['name_amount_2_bank_%d' % i]
+            print bank_account.__dict__
+            print
+            bank_accounts.append(bank_account)
+
+        vehicles = []
+        for i in (1, 2, 3):
+            vehicle = models.Vehicle()
+            vehicle.make_and_year = self.cleaned_data['asset_1_vehicle_%d' % i]
+            vehicle.asset_value = models.AssetValue()
+            vehicle.asset_value.fair_market_value = self.cleaned_data['asset_2_vehicle_%d' % i]
+            vehicle.asset_value.amount_still_owed = self.cleaned_data['asset_3_vehicle_%d' % i]
+            print vehicle.__dict__
+            print
+            vehicles.append(vehicle)
+
+        real_estates = []
+        for i in (1, 2):
+            real_estate = models.RealEstate()
+            real_estate.address = self.cleaned_data['asset_1_real_estate_%d' % i]
+            real_estate.asset_value = models.AssetValue()
+            real_estate.asset_value.fair_market_value = self.cleaned_data['asset_2_real_estate_%d' % i]
+            real_estate.asset_value.amount_still_owed = self.cleaned_data['asset_3_real_estate_%d' % i]
+            print real_estate.__dict__
+            print
+            real_estates.append(real_estate)
+
+        other_property = []
+        for i in (1, 2):
+            personal_property = models.PersonalProperty()
+            personal_property.description = self.cleaned_data['asset_1_other_%d' % i]
+            personal_property.asset_value = models.AssetValue()
+            personal_property.asset_value.fair_market_value = self.cleaned_data['asset_2_other_%d' % i]
+            personal_property.asset_value.amount_still_owed = self.cleaned_data['asset_3_other_%d' % i]
+            print personal_property.__dict__
+            print
+            other_property.append(personal_property)
+
+        money_and_property = models.MoneyAndProperty()
+        money_and_property.total_cash = total_cash
+        money_and_property.bank_accounts = bank_accounts
+        money_and_property.vehicles = vehicles
+        money_and_property.real_estate = real_estates
+        money_and_property.other_property = other_property
+        return money_and_property
 
     def _get_monthly_income_sources(self):
         monthly_income_sources = []
