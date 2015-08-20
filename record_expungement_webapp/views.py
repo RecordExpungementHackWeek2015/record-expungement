@@ -8,8 +8,8 @@ from django.template import loader
 from django.template import RequestContext
 
 from record_expungement_webapp import mocks
+from record_expungement_webapp import models
 from logic_engine import ExpungementLogicEngine
-from models import PersonalHistory
 
 
 # File upload form.
@@ -67,7 +67,7 @@ def _process_rap_sheet(uploaded_file):
     for chunk in uploaded_file.chunks():
         pass
     rap_sheet = mocks.RAP_SHEET_1
-    logic_engine = ExpungementLogicEngine(PersonalHistory(rap_sheet))
+    logic_engine = ExpungementLogicEngine(models.PersonalHistory(rap_sheet))
     return logic_engine.annotate_rap_sheet()
 
 
@@ -94,7 +94,6 @@ def complete_personal_info(request):
     })
 
     return HttpResponse(template.render(context))
-
 
 # Personal and financial info form.
 class PersonalInfoForm(forms.Form):
@@ -222,6 +221,71 @@ class PersonalInfoForm(forms.Form):
             field_name = '%s%d' % (self._WAIVER_PREFIX, i)
             self.fields[field_name] = forms.BooleanField(label=field_name, required=False)
 
+    def _create_personal_history(self, rap_sheet):
+        name = models.Name(self.cleaned_data['fname'], self.cleaned_data['mname'], self.cleaned_data['lname'])
+        address = models.Address(self.cleaned_data['address'], self.cleaned_data['city'], self.cleaned_data['state'],
+            self.cleaned_data['zip_code'])
+        email = self.cleaned_data['email']
+        phone_number = self.cleaned_data['phone']
+
+        financial_info = self._get_financial_info()
+        personal_history = models.PersonalHistory(rap_sheet, name=name, address=address,
+            email=email, phone_number=phone_number, financial_info=financial_info)
+        print personal_history.__dict__
+        print
+        return personal_history
+
+    def _get_financial_info(self):
+        job_title = self.cleaned_data['job_title']
+        employer_name = self.cleaned_data['employer_name']
+        address = models.Address(self.cleaned_data['employer_address'], self.cleaned_data['employer_city'],
+            self.cleaned_data['employer_state'], self.cleaned_data['employer_zip_code'])
+        job = models.Job(job_title, employer_name, address)
+
+        monthly_income_sources = self._get_monthly_income_sources()
+        other_household_wage_earners = self._get_other_household_wage_earners()
+        money_and_property = self._get_money_and_property()
+
+        financial_info = models.FinancialInfo(job=job, monthly_income_sources=monthly_income_sources,
+            money_and_property=money_and_property)
+
+        financial_info.benefits_received_from_state = self._get_benefits()
+        financial_info.family_size = self.cleaned_data['family_size']
+        financial_info.total_family_income = self.cleaned_data['family_income']
+        financial_info.event_index_to_whether_fees_have_been_waived_recently = self._get_event_to_waiver_status()
+        financial_info.income_changes_significantly_month_to_month = self.cleaned_data['income_changes']
+
+        print financial_info.__dict__
+        print
+        return financial_info
+
+    def _get_money_and_property(self):
+        pass
+
+    def _get_monthly_income_sources(self):
+        monthly_income_sources = []
+        for i in (1, 2, 3, 4):
+            monthly_income_source = models.MonthlyIncomeSource()
+            monthly_income_source.job_title = self.cleaned_data['name_amount_1_monthly_%d' % i]
+            monthly_income_source.monthly_income = self.cleaned_data['name_amount_2_monthly_%d' % i]
+            monthly_income_sources.append(monthly_income_source)
+            print monthly_income_source.__dict__
+            print
+        return monthly_income_sources
+
+    def _get_other_household_wage_earners(self):
+        other_household_wage_earners = []
+        for i in (1, 2, 3, 4):
+            wage_earner = models.WageEarner()
+            wage_earner.name = self.cleaned_data['wage_earner_title_%d' % i]
+            wage_earner.age = self.cleaned_data['wage_earner_age_%d' % i]
+            wage_earner.relationship = self.cleaned_data['wage_earner_relationship_%d' % i]
+            wage_earner.gross_monthly_income = self.cleaned_data['wage_earner_amount_%d' % i]
+            other_household_wage_earners.append(wage_earner)
+            print wage_earner.__dict__
+            print
+        return other_household_wage_earners
+
     # Get zipped list of event to waiver field.
     def waiver_fields(self):
         result = []
@@ -230,9 +294,10 @@ class PersonalInfoForm(forms.Form):
                 result.append(self[name])
         return zip(self.events, result)
 
+
     # Get map of event index to if fees were waived before
     # i.e. {0: False, 1: False, 2: False}
-    def get_event_to_waiver_status(self):
+    def _get_event_to_waiver_status(self):
         idx_to_status = {}
         for name, value in self.cleaned_data.items():
             if name.startswith(self._WAIVER_PREFIX):
@@ -242,7 +307,7 @@ class PersonalInfoForm(forms.Form):
 
     # Get benefits received as int values
     # i.e. [2, 4, 6]
-    def get_benefits(self):
+    def _get_benefits(self):
         benefits = []
         for name, value in self.cleaned_data.items():
             if name.startswith(self._BENEFIT_PREFIX):
@@ -263,11 +328,7 @@ def submit_personal_info(request):
             field.required = False
 
         if info_form.is_valid():
-            # for item in info_form.cleaned_data.items():
-            #     print item
-            print info_form.get_event_to_waiver_status()
-            print info_form.get_benefits()
-
+            info_form._create_personal_history(rap_sheet)
             return HttpResponseRedirect('/webapp/success')
     else:
         info_form = PersonalInfoForm(events=rap_sheet.events)
