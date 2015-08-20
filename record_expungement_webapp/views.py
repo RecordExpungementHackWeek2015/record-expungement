@@ -99,7 +99,7 @@ def complete_personal_info(request):
 # Personal and financial info form.
 class PersonalInfoForm(forms.Form):
     fname = forms.CharField(label='First name', max_length=100)
-    mname = forms.CharField(label='Middle name', max_length=100)
+    mname = forms.CharField(label='Middle name', max_length=100, required=False)
     lname = forms.CharField(label='Last name', max_length=100)
 
     address = forms.CharField(label='Address', max_length=100)
@@ -107,15 +107,15 @@ class PersonalInfoForm(forms.Form):
     state = forms.CharField(label='State', max_length=10)
     zip_code = forms.CharField(label='Zip code', max_length=10)
 
-    email = forms.CharField(label='Email', max_length=100)
+    email = forms.CharField(label='Email', max_length=100, required=False)
     phone = forms.CharField(label='Phone', max_length=20)
 
-    job_title = forms.CharField(label='Job title', max_length=100)
-    employer_name = forms.CharField(label='Employer name', max_length=100)
-    employer_address = forms.CharField(label='Employer address', max_length=100)
-    employer_city = forms.CharField(label='City', max_length=100)
-    employer_state = forms.CharField(label='State', max_length=10)
-    employer_zip_code = forms.CharField(label='Zip code', max_length=10)
+    job_title = forms.CharField(label='Job title', max_length=100, required=False)
+    employer_name = forms.CharField(label='Employer name', max_length=100, required=False)
+    employer_address = forms.CharField(label='Employer address', max_length=100, required=False)
+    employer_city = forms.CharField(label='City', max_length=100, required=False)
+    employer_state = forms.CharField(label='State', max_length=10, required=False)
+    employer_zip_code = forms.CharField(label='Zip code', max_length=10, required=False)
 
     benefit_0 = forms.BooleanField(label='FOOD_STAMPS', required=False)
     benefit_1 = forms.BooleanField(label='SUPP_SEC_INC', required=False)
@@ -128,6 +128,88 @@ class PersonalInfoForm(forms.Form):
 
     family_size = forms.CharField(label='Family size', max_length=10)
     family_income = forms.CharField(label='Monthly family income', max_length=10)
+
+    income_changes = forms.BooleanField(label='Does your income change a lot from month to month?', required=False)
+
+    name_amount_1_monthly_1 = forms.CharField(label='Job title', max_length=100, required=False)
+    name_amount_2_monthly_1 = forms.CharField(label='Amount', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    name_amount_1_monthly_2 = forms.CharField(label='Job title', max_length=100, required=False)
+    name_amount_2_monthly_2 = forms.CharField(label='Amount', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    name_amount_1_monthly_3 = forms.CharField(label='Job title', max_length=100, required=False)
+    name_amount_2_monthly_3 = forms.CharField(label='Amount', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    name_amount_1_monthly_4 = forms.CharField(label='Job title', max_length=100, required=False)
+    name_amount_2_monthly_4 = forms.CharField(label='Amount', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+
+    wage_earner_title_1 = forms.CharField(label='Job title', max_length=100, required=False)
+    wage_earner_age_1 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_relationship_1 = forms.CharField(label='Relationship', max_length=50, required=False)
+    wage_earner_amount_1 = forms.CharField(label='Amount', max_length=10, required=False)
+    wage_earner_title_2 = forms.CharField(label='Job title', max_length=100, required=False)
+    wage_earner_age_2 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_relationship_2 = forms.CharField(label='Relationship', max_length=50, required=False)
+    wage_earner_amount_2 = forms.CharField(label='Amount', max_length=10, required=False)
+    wage_earner_title_3 = forms.CharField(label='Job title', max_length=100, required=False)
+    wage_earner_age_3 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_relationship_3 = forms.CharField(label='Relationship', max_length=50, required=False)
+    wage_earner_amount_3 = forms.CharField(label='Amount', max_length=10, required=False)
+    wage_earner_title_4 = forms.CharField(label='Job title', max_length=100, required=False)
+    wage_earner_age_4 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_relationship_4 = forms.CharField(label='Relationship', max_length=50, required=False)
+    wage_earner_amount_4 = forms.CharField(label='Amount', max_length=10, required=False)
+
+    name_amount_1_bank_1 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_bank_1 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_bank_2 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_bank_2 = forms.CharField(label='', max_length=10, required=False)
+
+    asset_1_vehicle_1 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_vehicle_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_vehicle_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_1_vehicle_2 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_vehicle_2 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_vehicle_2 = forms.CharField(label='', max_length=10, required=False)
+
+    asset_1_real_estate_1 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_real_estate_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_real_estate_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_1_real_estate_2 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_real_estate_2 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_real_estate_2 = forms.CharField(label='', max_length=10, required=False)
+
+    asset_1_other_1 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_other_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_other_1 = forms.CharField(label='', max_length=10, required=False)
+    asset_1_other_2 = forms.CharField(label='', max_length=100, required=False)
+    asset_2_other_2 = forms.CharField(label='', max_length=10, required=False)
+    asset_3_other_2 = forms.CharField(label='', max_length=10, required=False)
+
+    name_amount_1_payroll_1 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_payroll_1 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_payroll_2 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_payroll_2 = forms.CharField(label='', max_length=10, required=False)
+
+    long_rent = forms.CharField(label='Rent or house payment', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_food_household = forms.CharField(label='Food or household supplies', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_utilities = forms.CharField(label='Utilities and telephone', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_clothing = forms.CharField(label='Clothing', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_laundry = forms.CharField(label='Laundry and cleaning', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_medical = forms.CharField(label='Medical and dental', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_insurance = forms.CharField(label='Insurance', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_school = forms.CharField(label='School, child care', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_child = forms.CharField(label='Child, spousal support', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+    long_transportation = forms.CharField(label='Transportation, gas', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+
+    name_amount_1_installment_1 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_installment_1 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_installment_2 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_installment_2 = forms.CharField(label='', max_length=10, required=False)
+
+    long_wages = forms.CharField(label='Wages withheld by court order', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
+
+    name_amount_1_other_1 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_other_1 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_other_2 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_other_2 = forms.CharField(label='', max_length=10, required=False)
 
     _WAIVER_PREFIX = 'waiver_'
     _BENEFIT_PREFIX = 'benefit_'

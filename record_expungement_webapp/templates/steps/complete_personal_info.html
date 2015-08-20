@@ -64,8 +64,6 @@
           <div class="col-right">{{ event.listed_dob|date:"SHORT_DATE_FORMAT"}}</div>
         </div>
 
-        {{ waiver_field.errors }}
-
         {% for case_info in event.associated_cases %}
           <div class="case">
             <h3>Case ID {{ case_info.case_id }}</h3>
@@ -150,22 +148,111 @@
       {% else %}
         {% if "benefit_0" == field.name %}
         Benefits received
+
+        {% elif "name_amount_1_monthly_1" == field.name %}
+        Monthly income sources
+          <div class="row-2 clearfix">
+            <div class="col-left-large">Job title</div>
+            <div class="col-right-small">Amount</div>
+          </div>
+        {% elif "wage_earner_title_1" == field.name %}
+        Household income sources
+          <div class="row-4 clearfix">
+            <div class="col-4">Job title</div>
+            <div class="col-4-small">Age</div>
+            <div class="col-4">Relationship</div>
+            <div class="col-4">Amount</div>
+          </div>
+        {% elif "asset_1_vehicle_1" == field.name %}
+          Cars, boats, and other vehicles
+          <div class="row-4 clearfix">
+            <div class="col-4">Make/Year</div>
+            <div class="col-4">FMV</div>
+            <div class="col-4">Amount owed</div>
+          </div>
+        {% elif "asset_1_real_estate_1" == field.name %}
+          Real estate
+          <div class="row-4 clearfix">
+            <div class="col-4">Address</div>
+            <div class="col-4">FMV</div>
+            <div class="col-4">Amount owed</div>
+          </div>
+        {% elif "asset_1_other_1" == field.name %}
+          Other personal property
+          <div class="row-4 clearfix">
+            <div class="col-4">Describe</div>
+            <div class="col-4">FMV</div>
+            <div class="col-4">Amount owed</div>
+          </div>
+        {% elif "name_amount_1_bank_1" == field.name %}
+          All financial accounts
+        {% elif "name_amount_1_payroll_1" == field.name %}
+          Payroll deductions
+        {% elif "name_amount_1_installment_1" == field.name %}
+          Installment payments
+        {% elif "name_amount_1_other_1" == field.name %}
+          Other monthly expenses
         {% endif %}
 
-        {% if "benefit_" in field.name %}
-
+        {% if "benefit_" in field.name or "income_changes" == field.name %}
+          {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
           <div class="row-2 clearfix">
-            {{ field.errors }}
             <div class="col-num">{{ field }}</div>
             <div class="col-right">{{ field.label }}</div>
           </div>
 
-        {% else %}
+        {% elif "wage_earner_" in field.name %}
+          {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
+          {% if "wage_earner_title_" in field.name %}
+          <div class="row-4 clearfix">
+            <div class="col-4">{{ field }}</div>
+          {% elif "wage_earner_age_" in field.name %}
+            <div class="col-4-small">{{ field }}</div>
+          {% elif "wage_earner_relationship_" in field.name %}
+            <div class="col-4">{{ field }}</div>
+          {% else %}
+            <div class="col-4">{{ field }}</div>
+          </div>
+          {% endif %}
 
+        {% elif "asset_" in field.name %}
+          {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
+          {% if "asset_1_" in field.name %}
+          <div class="row-4 clearfix">
+            <div class="col-4">{{ field }}</div>
+          {% elif "asset_2_" in field.name %}
+            <div class="col-4">{{ field }}</div>
+          {% elif "asset_3_" in field.name %}
+            <div class="col-4">{{ field }}</div>
+          </div>
+          {% endif %}
+
+        {% elif "name_amount_" in field.name %}
+          {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
+          {% if "name_amount_1_" in field.name %}
           <div class="row-2 clearfix">
-            {{ field.errors }}
+            <div class="col-left-large">{{ field }}</div>
+          {% else %}
+            <div class="col-right-small">{{ field }}</div>
+          </div>
+          {% endif %}
+
+        {% elif "long_" in field.name %}
+          <div class="row-2 clearfix">
+            <div class="col-left-large">{{ field.label }}</div>
+            <div class="col-right-small">
+              {{ field }}
+              {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
+            </div>
+          </div>
+
+        {% else %}
+          <div class="row-2 clearfix">
             <div class="col-left">{{ field.label }}</div>
-            <div class="col-right">{{ field }}</div>
+            <div class="col-right">
+              {{ field }}
+              {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
+            </div>
           </div>
         {% endif %}
 
@@ -173,6 +260,7 @@
     {% endfor %}
     </div>
   </div><!-- end personal info -->
+
 
   <div class="top-level-section">
     <input type="submit" value="Submit info"/>

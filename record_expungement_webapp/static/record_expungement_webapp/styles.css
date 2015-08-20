@@ -76,6 +76,9 @@ form {
   margin: 0;
 }
 
+.errorlist {
+    display: inline;
+}
 .indent-1 {
     padding: 0 2em;
 }
@@ -139,6 +142,15 @@ input[type=submit] {
     float: left;
     width: 92%;
 }
+.col-left-large {
+    float: left;
+    width: 18%;
+    color: #666;
+}
+.col-right-small {
+    float: left;
+    width: 82%;
+}
 .col-num {
     float: left;
     width: 2%;
@@ -152,6 +164,22 @@ input[type=submit] {
 .row-2 [class*="col-"]:first-child {
     margin-left: -20px;
 }
+
+.col-4 {
+    float: left;
+    width: 15%;
+}
+.col-4-small {
+    float: left;
+    width: 5%;
+}
+.row-4 {
+    padding-left: 60px;
+}
+.row-4 [class*="col-"]:first-child {
+    margin-left: -60px;
+}
+
 
 
 
