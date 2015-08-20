@@ -142,11 +142,32 @@
   <div class="top-level-section gray">
     <h2>Section 3 - Personal Info</h2>
     <div>
-      {{ info_form.email.errors }}
-      <div class="row-2 clearfix">
-        <div class="col-left">Email</div>
-        <div class="col-right">{{ info_form.email }}</div>
-      </div>
+    {% for field in info_form %}
+      {% if "waiver_" in field.name %}
+      {% else %}
+        {% if "benefit_0" == field.name %}
+        Benefits received
+        {% endif %}
+
+        {% if "benefit_" in field.name %}
+
+          <div class="row-2 clearfix">
+            {{ field.errors }}
+            <div class="col-num">{{ field }}</div>
+            <div class="col-right">{{ field.label }}</div>
+          </div>
+
+        {% else %}
+
+          <div class="row-2 clearfix">
+            {{ field.errors }}
+            <div class="col-left">{{ field.label }}</div>
+            <div class="col-right">{{ field }}</div>
+          </div>
+        {% endif %}
+
+      {% endif %}
+    {% endfor %}
     </div>
   </div><!-- end personal info -->
 

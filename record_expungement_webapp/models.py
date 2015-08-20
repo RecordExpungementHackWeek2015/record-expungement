@@ -391,9 +391,11 @@ class FinancialInfo:
         self.job = job  # Job
 
         # FW001 Section 5a
+        # if non-empty don't show page 2
         self.benefits_received_from_state = []  # List of StateBenefit (i.e. int)
 
         # FW001 Section 5b
+        # if non-empty don't show 10, 11
         self.family_size = None  # int
         self.total_family_income = None  # int - in dollars
 
@@ -417,6 +419,9 @@ class FinancialInfo:
         # FW003 Section 11
         self.monthly_deductions_and_expenses = monthly_deductions_and_expenses  # MonthlyDeductionsAndExpenses
 
+    def is_monthly_income_below_threshold(self):
+        return False # something with family_size and total_family_income
+
 
 class PersonalHistory:
     def __init__(self, rap_sheet, name=None, address=None, email=None, phone_number=None, financial_info=None):
@@ -429,6 +434,7 @@ class PersonalHistory:
         :type financial_info: FinancialInfo
         """
         self.rap_sheet = rap_sheet  # RAPSheet
+
         self.name = name  # Name
         self.address = address  # Address
         self.email = email  # str

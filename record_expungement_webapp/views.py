@@ -82,11 +82,12 @@ def complete_personal_info(request):
     filename, filesize, rap_sheet = _load_vars_from_session(request)
 
     template = loader.get_template('steps/complete_personal_info.html')
+    info_form = PersonalInfoForm(events=rap_sheet.events)
     context = RequestContext(request, {
         'filename': filename,
         'filesize': filesize,
         'rap_sheet': rap_sheet,
-        'info_form': PersonalInfoForm(events=rap_sheet.events),
+        'info_form': info_form,
     })
 
     return HttpResponse(template.render(context))
@@ -94,24 +95,76 @@ def complete_personal_info(request):
 
 # Personal and financial info form.
 class PersonalInfoForm(forms.Form):
+    fname = forms.CharField(label='First name', max_length=100)
+    mname = forms.CharField(label='Middle name', max_length=100)
+    lname = forms.CharField(label='Last name', max_length=100)
+
+    address = forms.CharField(label='Address', max_length=100)
+    city = forms.CharField(label='City', max_length=100)
+    state = forms.CharField(label='State', max_length=10)
+    zip_code = forms.CharField(label='Zip code', max_length=10)
+
     email = forms.CharField(label='Email', max_length=100)
+    phone = forms.CharField(label='Phone', max_length=20)
+
+    job_title = forms.CharField(label='Job title', max_length=100)
+    employer_name = forms.CharField(label='Employer name', max_length=100)
+    employer_address = forms.CharField(label='Employer address', max_length=100)
+    employer_city = forms.CharField(label='City', max_length=100)
+    employer_state = forms.CharField(label='State', max_length=10)
+    employer_zip_code = forms.CharField(label='Zip code', max_length=10)
+
+    benefit_0 = forms.BooleanField(label='FOOD_STAMPS', required=False)
+    benefit_1 = forms.BooleanField(label='SUPP_SEC_INC', required=False)
+    benefit_2 = forms.BooleanField(label='SSP', required=False)
+    benefit_3 = forms.BooleanField(label='MEDI_CAL', required=False)
+    benefit_4 = forms.BooleanField(label='COUNTY_RELIEF_OR_GEN_ASSIST', required=False)
+    benefit_5 = forms.BooleanField(label='IHSS', required=False)
+    benefit_6 = forms.BooleanField(label='CALWORKS_OR_TRIBAL_TANF', required=False)
+    benefit_7 = forms.BooleanField(label='CAPI', required=False)
+
+    family_size = forms.CharField(label='Family size', max_length=10)
+    family_income = forms.CharField(label='Monthly family income', max_length=10)
+
+    _WAIVER_PREFIX = 'waiver_'
+    _BENEFIT_PREFIX = 'benefit_'
 
     def __init__(self, *args, **kwargs):
         self.events = kwargs.pop('events')
         super(PersonalInfoForm, self).__init__(*args, **kwargs)
 
         for i, e in enumerate(self.events):
-            field_name = 'waiver_%d' % i
-            self.fields[field_name] = forms.BooleanField(label=e, required=False)
+            field_name = '%s%d' % (self._WAIVER_PREFIX, i)
+            self.fields[field_name] = forms.BooleanField(label=field_name, required=False)
 
     # Get zipped list of event to waiver field.
     def waiver_fields(self):
         result = []
         for name in self.fields:
-            if name.startswith('waiver_'):
+            if name.startswith(self._WAIVER_PREFIX):
                 result.append(self[name])
         return zip(self.events, result)
 
+    # Get map of event index to if fees were waived before
+    # i.e. {0: False, 1: False, 2: False}
+    def get_event_to_waiver_status(self):
+        idx_to_status = {}
+        for name, value in self.cleaned_data.items():
+            if name.startswith(self._WAIVER_PREFIX):
+                idx = int(name[len(self._WAIVER_PREFIX):])
+                idx_to_status[idx] = value
+        return idx_to_status
+
+    # Get benefits received as int values
+    # i.e. [2, 4, 6]
+    def get_benefits(self):
+        benefits = []
+        for name, value in self.cleaned_data.items():
+            if name.startswith(self._BENEFIT_PREFIX):
+                if value:
+                    idx = int(name[len(self._BENEFIT_PREFIX):])
+                    benefits.append(idx)
+        return benefits
 
 # Process personal info input.
 def submit_personal_info(request):
@@ -119,9 +172,17 @@ def submit_personal_info(request):
 
     if request.method == 'POST':
         info_form = PersonalInfoForm(request.POST, events=rap_sheet.events)
+
+        info_form.require_all_fields = False
+        for field in info_form:
+            field.required = False
+
         if info_form.is_valid():
-            for item in info_form.cleaned_data.items():
-                print item
+            # for item in info_form.cleaned_data.items():
+            #     print item
+            print info_form.get_event_to_waiver_status()
+            print info_form.get_benefits()
+
             return HttpResponseRedirect('/webapp/success')
     else:
         info_form = PersonalInfoForm(events=rap_sheet.events)
