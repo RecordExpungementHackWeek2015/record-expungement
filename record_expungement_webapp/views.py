@@ -26,7 +26,7 @@ def start(request):
 
 
 def _clear_session(request):
-    keys = ('filename', 'filesize', 'rap_sheet')
+    keys = ('filename', 'filesize', 'rap_sheet', 'personal_history')
     for key in keys:
         try:
             del request.session[key]
@@ -193,6 +193,10 @@ class PersonalInfoForm(forms.Form):
     name_amount_2_payroll_1 = forms.CharField(label='', max_length=10, required=False)
     name_amount_1_payroll_2 = forms.CharField(label='', max_length=100, required=False)
     name_amount_2_payroll_2 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_payroll_3 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_payroll_3 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_payroll_4 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_payroll_4 = forms.CharField(label='', max_length=10, required=False)
 
     long_rent = forms.CharField(label='Rent or house payment', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
     long_food_household = forms.CharField(label='Food or household supplies', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
@@ -252,9 +256,10 @@ class PersonalInfoForm(forms.Form):
         monthly_income_sources = self._get_monthly_income_sources()
         other_household_wage_earners = self._get_other_household_wage_earners()
         money_and_property = self._get_money_and_property()
+        monthly_deductions_and_expenses = self._get_monthly_deductions_and_expenses()
 
         financial_info = models.FinancialInfo(job=job, monthly_income_sources=monthly_income_sources,
-            money_and_property=money_and_property)
+            money_and_property=money_and_property, monthly_deductions_and_expenses=monthly_deductions_and_expenses)
 
         financial_info.benefits_received_from_state = self._get_benefits()
         financial_info.family_size = self.cleaned_data['family_size']
@@ -265,6 +270,31 @@ class PersonalInfoForm(forms.Form):
         print financial_info.__dict__
         print
         return financial_info
+
+    def _get_monthly_deductions_and_expenses(self):
+        mdae = models.MonthlyDeductionsAndExpenses()
+
+        payroll_deduction = []
+        for i in (1, 2, 3, 4):
+            expense = models.Expense()
+            expense.recipient = self.cleaned_data['name_amount_1_payroll_%d' % i]
+            expense.amount = self.cleaned_data['name_amount_2_payroll_%d' % i]
+            payroll_deduction.append(expense)
+
+        mdae.payroll_deduction = payroll_deduction
+
+        mdae.rent_or_house_payment = self.cleaned_data['long_rent']
+        mdae.food_and_household_supplies = self.cleaned_data['long_food_household']
+        mdae.utilities_and_telephone = self.cleaned_data['long_utilities']
+        mdae.clothing = self.cleaned_data['long_clothing']
+        mdae.laundry_and_cleaning = self.cleaned_data['long_laundry']
+        mdae.medical_and_dental = self.cleaned_data['long_medical']
+        mdae.insurance = self.cleaned_data['long_insurance']
+        mdae.school_and_child_care = self.cleaned_data['long_school']
+        mdae.child_or_spousal_support = self.cleaned_data['long_child']
+        mdae.car_and_transporation = self.cleaned_data['long_transportation']
+
+        return mdae
 
     def _get_money_and_property(self):
         total_cash = self.cleaned_data['cash']
@@ -385,7 +415,7 @@ def submit_personal_info(request):
             field.required = False
 
         if info_form.is_valid():
-            info_form._create_personal_history(rap_sheet)
+            request.session['personal_history'] = pickle.dumps(info_form._create_personal_history(rap_sheet))
             return HttpResponseRedirect('/webapp/success')
     else:
         info_form = PersonalInfoForm(events=rap_sheet.events)
@@ -407,8 +437,11 @@ def success(request):
 
 
 def _generate_forms(request):
+    personal_history = pickle.loads(request.session['personal_history'])
+    print personal_history
+
     buf = cStringIO.StringIO()
-    buf.write("foo")
+    buf.write(str(personal_history))
     return buf.getvalue()
 
 
