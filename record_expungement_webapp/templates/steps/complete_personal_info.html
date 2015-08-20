@@ -9,7 +9,7 @@
   Your RAP sheet {{ filename }} was uploaded successfully.
 </div>
 
-<div class="top-level-section">
+<div class="top-level-section gray">
   <h2>Section 1 - Primary info</h2>
   <div class="row-2 clearfix">
     <div class="col-left">DOB</div>
@@ -35,7 +35,7 @@
   {% csrf_token %}
   {{ info_form.non_field_errors }}
 
-  <div class="top-level-section">
+  <div class="top-level-section gray">
     <h2>Section 2 - Events</h2>
     {% for event, waiver_field in info_form.waiver_fields %}
       <div class="indent-1 event">
@@ -132,7 +132,6 @@
                   <div class="col-right">Yes</div>
                 </div>
                 {% endif %}
-                </div>
             </div>
           </div>
         {% endfor %}
@@ -140,7 +139,7 @@
     {% endfor %}
   </div> <!-- end events -->
 
-  <div class="top-level-section">
+  <div class="top-level-section gray">
     <h2>Section 3 - Personal Info</h2>
     <div>
       {{ info_form.email.errors }}

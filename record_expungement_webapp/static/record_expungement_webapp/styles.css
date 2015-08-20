@@ -93,6 +93,11 @@ form {
 .top-level-section {
     margin: 2em 0em;
 }
+.gray {
+    background-color: #eee;
+    padding: 1em;
+    border-radius: 3px;
+}
 input[type=submit] {
     font-size: 2em;
 }
