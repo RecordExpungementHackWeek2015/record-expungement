@@ -8,6 +8,8 @@ from django.template import loader
 from django.template import RequestContext
 
 from record_expungement_webapp import mocks
+from logic_engine import ExpungementLogicEngine
+from models import PersonalHistory
 
 
 # File upload form.
@@ -65,7 +67,8 @@ def _process_rap_sheet(uploaded_file):
     for chunk in uploaded_file.chunks():
         pass
     rap_sheet = mocks.RAP_SHEET_1
-    return rap_sheet
+    logic_engine = ExpungementLogicEngine(PersonalHistory(rap_sheet))
+    return logic_engine.annotate_rap_sheet()
 
 
 def _load_vars_from_session(request):
@@ -74,7 +77,7 @@ def _load_vars_from_session(request):
 
     filename = request.session.get('filename')
     filesize = request.session.get('filesize')
-    return (filename, filesize, rap_sheet)
+    return filename, filesize, rap_sheet
 
 
 # Render the parsed rap sheet and personal info form.

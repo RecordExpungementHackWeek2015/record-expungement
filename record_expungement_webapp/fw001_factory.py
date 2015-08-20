@@ -44,18 +44,18 @@ class FW001Factory:
 
         income_fields = []
         for i, source in enumerate(fi.monthly_income_sources):
-            income_fields.extend([("8a%(i)s1" % {'i': i}, source.job_title),
-                                  ("8a%(i)s2" % {'i': i}, source.monthly_income)])
+            income_fields.extend([("8a%(i)sa" % {'i': i}, source.job_title),
+                                  ("8a%(i)sb" % {'i': i}, source.monthly_income)])
 
         for i, source in enumerate(fi.other_household_wage_earners):
-            income_fields.extend([("8a%(i)s1" % {'i': i}, source.name),
-                                  ("8a%(i)s2" % {'i': i}, source.age),
-                                  ("8a%(i)s3" % {'i': i}, source.relationship),
-                                  ("8a%(i)s4" % {'i': i}, source.gross_monthly_income)])
+            income_fields.extend([("9a%(i)sa" % {'i': i}, source.name),
+                                  ("9a%(i)sb" % {'i': i}, source.age),
+                                  ("9a%(i)sc" % {'i': i}, source.relationship),
+                                  ("9a%(i)sd" % {'i': i}, source.gross_monthly_income)])
 
-        income_fields.append(("8_total", monthly_personal_income_total))
-        income_fields.append(("9_total", household_income_total))
-        income_fields.append(("8_and_9_total", total))
+        income_fields.append(("8b", monthly_personal_income_total))
+        income_fields.append(("9b", household_income_total))
+        income_fields.append(("8b_9b", total))
 
     @staticmethod
     def _money_and_property(fi):
@@ -66,22 +66,22 @@ class FW001Factory:
         fields = [("10a", mp.total_cash)]
 
         for i, acct in enumerate(mp.bank_accounts):
-            fields.extend([("10b%(i)s1" % {'i': i}, acct.bank_name), ("10b%(i)s2" % {'i': i}, acct.amount)])
+            fields.extend([("10b%(i)sa" % {'i': i}, acct.bank_name), ("10b%(i)sv" % {'i': i}, acct.amount)])
 
         for i, vehicle in enumerate(mp.vehicles):
-            fields.extend([("10c%(i)s1" % {'i': i}, vehicle.make_and_year),
-                           ("10c%(i)s2" % {'i': i}, vehicle.asset_value.fair_market_value),
-                           ("10c%(i)s3" % {'i': i}, vehicle.asset_value.amount_still_owed)])
+            fields.extend([("10c%(i)sa" % {'i': i}, vehicle.make_and_year),
+                           ("10c%(i)sb" % {'i': i}, vehicle.asset_value.fair_market_value),
+                           ("10c%(i)sc" % {'i': i}, vehicle.asset_value.amount_still_owed)])
 
         for i, asset in enumerate(mp.real_estate):
-            fields.extend([("10d%(i)s1" % {'i': i}, asset.address.to_str_one_line()),
-                           ("10d%(i)s2" % {'i': i}, asset.asset_value.fair_market_value),
-                           ("10d%(i)s3" % {'i': i}, asset.asset_value.amount_still_owed)])
+            fields.extend([("10d%(i)sa" % {'i': i}, asset.address.to_str_one_line()),
+                           ("10d%(i)sb" % {'i': i}, asset.asset_value.fair_market_value),
+                           ("10d%(i)sc" % {'i': i}, asset.asset_value.amount_still_owed)])
 
         for i, asset in enumerate(mp.other_property):
-            fields.extend([("10e%(i)s1" % {'i': i}, asset.description),
-                           ("10e%(i)s2" % {'i': i}, asset.asset_value.fair_market_value),
-                           ("10f%(i)s3" % {'i': i}, asset.asset_value.amount_still_owed)])
+            fields.extend([("10e%(i)sa" % {'i': i}, asset.description),
+                           ("10e%(i)sb" % {'i': i}, asset.asset_value.fair_market_value),
+                           ("10f%(i)sc" % {'i': i}, asset.asset_value.amount_still_owed)])
 
     @staticmethod
     def _monthly_deductions_and_expenses(fi):
@@ -90,8 +90,8 @@ class FW001Factory:
 
         md = fi.monthly_deductions_and_expenses
         for i, deduction in enumerate(md.payroll_deduction):
-            descriptions.append(("11a%(i)s1" % {'i': i}, deduction.recipient))
-            dollar_amounts.append(("11a%(i)s2" % {'i': i}, deduction.amount))
+            descriptions.append(("11a%(i)sa" % {'i': i}, deduction.recipient))
+            dollar_amounts.append(("11a%(i)sb" % {'i': i}, deduction.amount))
 
         dollar_amounts.extend([
             ("11b", md.rent_or_house_payment),
@@ -108,12 +108,12 @@ class FW001Factory:
         ])
 
         for i, payment in enumerate(md.installment_payments):
-            descriptions.append(("11l%(i)s1" % {'i': i}, payment.recipient))
-            dollar_amounts.append(("11l%(i)s2" % {'i': i}, payment.amount))
+            descriptions.append(("11l%(i)sa" % {'i': i}, payment.recipient))
+            dollar_amounts.append(("11l%(i)sb" % {'i': i}, payment.amount))
 
         for i, expense in enumerate(md.other_monthly_expenses):
-            descriptions.append(("11n%(i)s1" % {'i': i}, expense.recipient))
-            dollar_amounts.append(("11n%(i)s2" % {'i': i}, expense.amount))
+            descriptions.append(("11n%(i)sa" % {'i': i}, expense.recipient))
+            dollar_amounts.append(("11n%(i)sb" % {'i': i}, expense.amount))
 
         total = sum(amount for (label, amount) in dollar_amounts)
         return descriptions + dollar_amounts + [("11_total", total)]

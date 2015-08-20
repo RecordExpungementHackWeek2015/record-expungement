@@ -61,19 +61,19 @@ class IneligibilityReason:
     def __init__(self):
         raise NotImplementedError
 
-    NOT_IN_SAN_MATEO_COUNTY = "not_in_san_mateo"
-    PRISON_TIME_GRANTED = "prison_time_granted"
-    OFFENSE_INELIGIBLE_FOR_EXPUNGMENT = "ineligible"
-    PROBATION_NOT_PART_OF_SENTENCE = "probation_not_part_of_sentence"
-    TOO_RECENT_FOR_FELONY_WITH_LOTS_OF_JAIL_TIME = "too_recent_for_felony_with_lots_of_jail_time"
+    NOT_IN_SAN_MATEO_COUNTY = "OFFENSE DIDN'T TAKE PLACE IN ELIGIBLE COUNTY"
+    PRISON_TIME_GRANTED = "PRISON TIME GRANTED"
+    OFFENSE_INELIGIBLE_FOR_EXPUNGMENT = "INELIGIBLE"
+    PROBATION_NOT_PART_OF_SENTENCE = "PROBATION NOT PART OF SENTENCE"
+    TOO_RECENT_FOR_FELONY_WITH_LOTS_OF_JAIL_TIME = "TOO RECENT FOR FELONY WITH LOTS OF JAIL TIME"
 
 
 class NeedsDeclarationReason:
     def __init__(self):
         raise NotImplementedError
 
-    OFFENSE_IS_A_FELONY = "offense_is_a_felony"
-    PROBATION_VIOLATED = "probation_violated"
+    OFFENSE_IS_A_FELONY = "OFFENSE IS A FELONY"
+    PROBATION_VIOLATED = "PROBATION VIOLATED"
 
 
 # I.e. the court decision
@@ -98,8 +98,8 @@ class IncarcerationType:
     def __init__(self):
         raise NotImplementedError
 
-    PRISON = "prison"
-    JAIL = "jail"
+    PRISON = "PRISON"
+    JAIL = "JAIL"
 
 
 class Incarceration:
@@ -258,7 +258,7 @@ class RAPSheet:
         :type names_as_charged: list[Name]
         :type dob: datetime.date
         :type sex: str
-        :type events: list
+        :type events: list[Event]
         """
         self.names_as_charged = names_as_charged  # list of Name
         self.dob = dob  # NOTE: The DOB on a criminal event TRUMPS this DOB if they are different

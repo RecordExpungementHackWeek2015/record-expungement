@@ -43,3 +43,10 @@ class SanMateoCountyCourt:
         :rtype : Address
         """
         return SanMateoCountyCourt._ADDRESS
+
+    @staticmethod
+    def contains_city(city):
+        """
+        :type city: str
+        """
+        return city in ["REDWOOD CITY"]

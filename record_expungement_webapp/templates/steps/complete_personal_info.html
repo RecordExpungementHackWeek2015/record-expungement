@@ -90,6 +90,9 @@
                           Yes
                         {% else %}
                           No
+                            {% for reason in count.ineligible_for_expungement_reasons %}
+                                <div>{{ reason }}</div>
+                            {% endfor %}
                         {% endif %}
                       </div>
                     </div>

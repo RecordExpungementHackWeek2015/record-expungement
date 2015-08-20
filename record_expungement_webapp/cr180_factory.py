@@ -16,11 +16,11 @@ class CR180Factory:
         table_fields = []
 
         for i, count in enumerate(event.associated_cases[0].counts):
-            table_fields.extend([("4b%(i)s1" % {'i': i}, count.offense.description),
-                                 ("4b%(i)s2" % {'i': i}, count.offense.code),
-                                 ("4b%(i)s3" % {'i': i}, count.offense.offense_id),
-                                 ("4b%(i)s4" % {'i': i}, count.disposition.crime_category),
-                                 ("4b%(i)s5" % {'i': i}, count.offense.eligible_for_reduction)])
+            table_fields.extend([("4b%(i)sa" % {'i': i}, count.offense.description),
+                                 ("4b%(i)sb" % {'i': i}, count.offense.code),
+                                 ("4b%(i)sc" % {'i': i}, count.offense.offense_id),
+                                 ("4b%(i)sd" % {'i': i}, count.disposition.crime_category),
+                                 ("4b%(i)se" % {'i': i}, count.offense.eligible_for_reduction)])
 
         return table_fields
 

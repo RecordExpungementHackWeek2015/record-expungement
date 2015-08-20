@@ -1,5 +1,6 @@
 import datetime
 from special_case_offenses import WobblerOffensesModel, IneligibleOffensesModel
+from county_court_info import SanMateoCountyCourt
 from models import PersonalHistory, IneligibilityReason, DispositionDecision, CrimeCategory, NeedsDeclarationReason, \
     IncarcerationType, Count, CaseInfo
 from cr180_factory import CR180Factory
@@ -23,9 +24,9 @@ class ExpungementLogicEngine:
         :type count: Count
         """
         o = count.offense
-        o.eligible_for_reduction = WobblerOffensesModel.offense_is_a_wobbler(o.code,
-                                                                             o.offense_id,
-                                                                             count.disposition.crime_category)
+        is_felony = count.disposition.crime_category == CrimeCategory.FELONY
+        o.eligible_for_reduction = is_felony \
+            and WobblerOffensesModel.offense_is_a_wobbler(o.code, o.offense_id, count.disposition.crime_category)
         o.eligible_for_dismissal = not IneligibleOffensesModel.offense_is_ineligible(o.code,
                                                                                      o.offense_id,
                                                                                      count.disposition.crime_category)
@@ -88,7 +89,7 @@ class ExpungementLogicEngine:
                         self._annotate_count_eligibility(case_info, count)
 
                 event_ineligibility_reasons = []
-                if case_info.county != "SAN MATEO":
+                if not SanMateoCountyCourt.contains_city(event.arrest_info.city):
                     event_ineligibility_reasons.append(IneligibilityReason.NOT_IN_SAN_MATEO_COUNTY)
                 if not case_info.sentence.probation_duration:
                     event_ineligibility_reasons.append(IneligibilityReason.PROBATION_NOT_PART_OF_SENTENCE)
@@ -125,6 +126,7 @@ class ExpungementLogicEngine:
         self._annotate_needs_declarations()
 
         # TODO: Create some sort of summary?
+        return self.personal_history.rap_sheet
 
     def update_financial_information(self, financial_information):
         """
