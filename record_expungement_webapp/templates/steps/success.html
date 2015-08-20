@@ -2,13 +2,18 @@
 
 <link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
 
-<h3>Success</h3>
+<h1>Success</h1>
 
-<p>
-  <form action="{% url 'download_forms' %}" method="post">
-    {% csrf_token %}
-    <p>
-      <input type="submit" value="Download forms"/>
-    </p>
-  </form>
-</p>
+<div class="top-level-section">
+    <div>
+        Your information was processed successfully. Click the button below to download your forms.
+    </div>
+</div>
+<div class="top-level-section">
+    <form action="{% url 'download_forms' %}" method="post">
+        {% csrf_token %}
+        <div>
+          <input type="submit" value="Download forms"/>
+        </div>
+    </form>
+</div>

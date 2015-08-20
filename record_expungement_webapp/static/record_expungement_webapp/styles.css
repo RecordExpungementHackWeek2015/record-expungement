@@ -13,8 +13,9 @@ button,
 body {
     background-color: #fff;
     min-height: 100%;
-    margin: 1em;
+    margin: 2em 2.5em;
     padding: 0;
+    line-height: 1.6em;
 }
 
 a, a * {
@@ -31,38 +32,35 @@ a {
 
 p, h1, h2, h3, h4, h5 {
     margin: 0 0 1em 0;
-    line-height: 1.6em;
 }
 
 h1 {
     font-size: 18pt;
     font-weight: normal;
     margin: 10px 0;
+    color: #666;
 }
 
 h2 {
     padding-top: 3px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     margin-bottom: 4px;
-    font-size: 10pt;
+    font-size: 14pt;
+    color: #666;
 }
 
 h3 {
-    padding: 0;
+    padding-top: 3px;
+    padding-bottom: 5px;
     margin: 0;
-    font-size: 10pt;
+    font-size: 12pt;
+    color: #666;
 }
 
 h4 {
-    margin: 0 0 0.5em 0;
+    margin: 0;
+    padding-bottom: 5px;
     font-weight: bold;
-    font-size: 14px;
-}
-
-h5 {
-    margin: 0 0 0.5em 0;
-    font-weight: bold;
-    font-size: 12px;
 }
 
 button {
@@ -81,27 +79,74 @@ form {
 .indent-1 {
     padding: 0 2em;
 }
-
 .event {
-    padding-top: 1em;
-    padding-left: 2em;
+    padding-bottom: 1.5em;
 }
-
 .case {
     padding-left: 2em;
 }
-
 .count {
-    padding-left: 2em;
+    padding-bottom: 2em;
 }
-
 .eligibility {
-    font-weight: bold;
 }
 .top-level-section {
     margin: 2em 0em;
 }
-
 input[type=submit] {
     font-size: 2em;
 }
+.button-left {
+    float: left;
+    margin-right: 20px;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+[class*="row-"] {
+    margin-bottom: 10px;
+}
+[class*="row-"]:last-child {
+    margin-bottom: 0;
+}
+[class*="col-"] {
+}
+[class*="col-"] {
+    margin-right: 20px;
+}
+[class*="col-"]:last-child {
+    margin-right: 0;
+}
+.col-left {
+    float: left;
+    width: 8%;
+    color: #666;
+}
+.col-right {
+    float: left;
+    width: 92%;
+}
+.col-num {
+    float: left;
+    width: 2%;
+}
+.col-both {
+    width: 100%;
+}
+.row-2 {
+    padding-left: 20px;
+}
+.row-2 [class*="col-"]:first-child {
+    margin-left: -20px;
+}
+
+
+

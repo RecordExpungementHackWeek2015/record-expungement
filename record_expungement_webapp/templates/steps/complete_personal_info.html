@@ -2,26 +2,32 @@
 
 <link rel="stylesheet" type="text/css" href="{% static "record_expungement_webapp/styles.css" %}"></link>
 
-<h2>
-  Your file was uploaded successfully.
-</h2>
-<div>
-  File name: {{ filename }}<br/>
-  File size: {{ filesize }}
+<h1>
+  Complete Personal Information
+</h1>
+<div class="top-level-section">
+  Your RAP sheet {{ filename }} was uploaded successfully.
 </div>
 
 <div class="top-level-section">
-  <h3>Primary info</h3>
-  <div class="indent-1">
-    <div>
-      DOB: {{ rap_sheet.dob|date:"SHORT_DATE_FORMAT" }} Sex: {{ rap_sheet.sex }}
+  <h2>Section 1 - Primary info</h2>
+  <div class="row-2 clearfix">
+    <div class="col-left">DOB</div>
+    <div class="col-right">{{ rap_sheet.dob|date:"SHORT_DATE_FORMAT" }}</div>
+  </div>
+  <div class="row-2 clearfix">
+    <div class="col-left">Sex</div>
+    <div class="col-right">{{ rap_sheet.sex }}</div>
+  </div>
+  <div class="row-2 clearfix">
+    <div class="col-left">Names</div>
+    <div class="col-right">
+      {% for name in rap_sheet.names_as_charged %}
+        <div>
+          {{ name }}
+        </div>
+      {% endfor %}
     </div>
-
-    {% for name in rap_sheet.names_as_charged %}
-      <div class="name">
-        {{ name }}
-      </div>
-    {% endfor %}
   </div>
 </div><!-- end primary info -->
 
@@ -30,7 +36,7 @@
   {{ info_form.non_field_errors }}
 
   <div class="top-level-section">
-    <h3>Events</h3>
+    <h2>Section 2 - Events</h2>
     {% for event, waiver_field in info_form.waiver_fields %}
       <div class="indent-1 event">
         {% if event.needs_declaration %}
@@ -39,60 +45,92 @@
             {{ reason }}
           {% endfor %}
         {% endif %}
-        <div>Arrest ID: {{ event.arrest_info.arrest_id }}</div>
-        <div>Date: {{ event.arrest_info.date|date:"SHORT_DATE_FORMAT" }}</div>
-        <div>City: {{ event.arrest_info.city }}</div>
-        <div>Listed DOB: {{ event.listed_dob|date:"SHORT_DATE_FORMAT"}}</div>
+        <h3>Arrest ID {{ event.arrest_info.arrest_id }}</h3>
+        <div class="row-2 clearfix">
+          <div class="col-both">
+            Fees waived before? {{ waiver_field }}
+          </div>
+        </div>
+        <div class="row-2 clearfix">
+          <div class="col-left">Date</div>
+          <div class="col-right">{{ event.arrest_info.date|date:"SHORT_DATE_FORMAT" }}</div>
+        </div>
+        <div class="row-2 clearfix">
+          <div class="col-left">City</div>
+          <div class="col-right">{{ event.arrest_info.city }}</div>
+        </div>
+        <div class="row-2 clearfix">
+          <div class="col-left">DOB</div>
+          <div class="col-right">{{ event.listed_dob|date:"SHORT_DATE_FORMAT"}}</div>
+        </div>
+
         {{ waiver_field.errors }}
-        Fees waived before? {{ waiver_field }}
 
         {% for case_info in event.associated_cases %}
           <div class="case">
-            <div>Case ID: {{ case_info.case_id }}</div>
-            <div>Date: {{ case_info.date|date:"SHORT_DATE_FORMAT" }}</div>
-            <div>County: {{ case_info.county }}</div>
-            <div>Counts:
+            <h3>Case ID {{ case_info.case_id }}</h3>
+            <div class="row-2 clearfix">
+              <div class="col-left">Date</div>
+              <div class="col-right">{{ case_info.date|date:"SHORT_DATE_FORMAT" }}</div>
+            </div>
+            <div class="row-2 clearfix">
+              <div class="col-left">County</div>
+              <div class="col-right">{{ case_info.county }}</div>
+            </div>
+            <h3>Counts</h3>
+            <div>
               {% for count in case_info.counts %}
-                <div class="count">
-                  <div class="eligibility">
-                    Eligible for expungement?
-                    {% if count.is_eligible_for_expungement %}
-                      Yes
-                    {% else %}
-                      No
-                    {% endif %}
-                  </div>
-                  <div>
-                    {{ count.offense.code }} {{ count.offense.offense_id }} {{ count.offense.description }}
-                  </div>
-                  <div>
-                    {{ count.disposition.disposition_decision }}
+                <div class="row-2 clearfix">
+                  <div class="col-num">{{ forloop.counter }}</div>
+                  <div class="col-right">
+                    <div class="row-2 clearfix">
+                      <div class="col-both">
+                        Eligible for expungement?
+                        {% if count.is_eligible_for_expungement %}
+                          Yes
+                        {% else %}
+                          No
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="row-2 clearfix">
+                      <div class="col-left">Offense</div>
+                      <div class="col-right">{{ count.offense.code }} {{ count.offense.offense_id }} {{ count.offense.description }}</div>
+                    </div>
+                    <div class="row-2 clearfix">
+                      <div class="col-left">Decision</div>
+                      <div class="col-right">{{ count.disposition.disposition_decision|capfirst }}</div>
+                    </div>
                     {% if count.disposition.crime_category %}
-                      {{ count.disposition.crime_category }}
+                      <div class="row-2 clearfix">
+                        <div class="col-left">Category</div>
+                        <div class="col-right">{{ count.disposition.crime_category|capfirst }}</div>
+                      </div>
                     {% endif %}
                   </div>
-                </div>
+              </div>
               {% endfor %}
             </div>
             <div>
-              Sentence:
-              <div class="indent-1">
+              <h3>Sentence</h3>
                 {% if case_info.sentence.probation_duration %}
-                  <div>
-                    Probation: {{ case_info.sentence.probation_duration.days }} days
-                  </div>
+                <div class="row-2 clearfix">
+                  <div class="col-left">Probation</div>
+                  <div class="col-right">{{ case_info.sentence.probation_duration.days }} days</div>
+                </div>
                 {% endif %}
                 {% if case_info.sentence.incarceration %}
-                  <div>
-                    Incarceration:
-                    {{ case_info.sentence.incarceration.type|capfirst }}
-                    {{ case_info.sentence.incarceration.duration.days }} days
-                  </div>
+                <div class="row-2 clearfix">
+                  <div class="col-left">Incarceration</div>
+                  <div class="col-right">{{ case_info.sentence.incarceration.type|capfirst }}
+                    {{ case_info.sentence.incarceration.duration.days }} days</div>
+                </div>
                 {% endif %}
                 {% if case_info.sentence.fine %}
-                  <div>
-                    Fine: Yes
-                  </div>
+                <div class="row-2 clearfix">
+                  <div class="col-left">Fine</div>
+                  <div class="col-right">Yes</div>
+                </div>
                 {% endif %}
                 </div>
             </div>
@@ -103,11 +141,13 @@
   </div> <!-- end events -->
 
   <div class="top-level-section">
-    <h3>Personal Info</h3>
-    <div class="indent-1">
+    <h2>Section 3 - Personal Info</h2>
+    <div>
       {{ info_form.email.errors }}
-      {{ info_form.email.label_tag }}
-      {{ info_form.email }}
+      <div class="row-2 clearfix">
+        <div class="col-left">Email</div>
+        <div class="col-right">{{ info_form.email }}</div>
+      </div>
     </div>
   </div><!-- end personal info -->
 

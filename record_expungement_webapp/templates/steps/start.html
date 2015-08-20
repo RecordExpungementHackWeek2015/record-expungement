@@ -20,22 +20,27 @@
   });
 </script>
 
-<h3>Upload file</h3>
-
-<p>
+<h1>Start Record Expungment</h1>
+<div class="top-level-section">
+    Upload a PDF of your RAP sheet to begin.
+</div>
+<div class="top-level-section">
   <form action="{% url 'upload_rap_sheet' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ doc_form.non_field_errors }}
-    <p>
+    <div>
       {{ doc_form.docfile.errors }}
       {{ doc_form.docfile }}
-    </p>
-    <p>
-      <input type="submit" value="Upload photo" id="button-upload"/>
-    </p>
-  </form>
-</p>
+    </div>
+    <br/>
+      <div class="button-left">
+        <input type="submit" value="Upload file" id="button-upload"/>
+      </div>
 
-<p id="spinner" style="display: none;">
-  <img id="img-spinner" src="{% static "record_expungement_webapp/ajax-loader.gif" %}" alt="Uploading"/>
-</p>
+      <div id="spinner" style="display: none;">
+        <img id="img-spinner" src="{% static "record_expungement_webapp/ajax-loader.gif" %}" alt="Uploading"/>
+      </div>
+    </div>
+  </form>
+</div>
+
