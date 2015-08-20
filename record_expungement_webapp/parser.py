@@ -17,22 +17,30 @@ tokens = (
 'ID_NUM',
 'WORD',
 'CNT_LABEL',
-'CRIME_CATEGORY'
+'CRIME_CATEGORY',
+'HEIGHT',
+'WEIGHT',
+'EYE_COLOR',
+'AGENCY_ID'
 )
 
 # Tokens
 
-t_DATE = r'19\d{2}[0-1][0-9][0-3][0-9]|20\d{2}[0-1][0-9][0-3][0-9]+/g' #(\d{4}\d{2}\d{2})
+t_DATE = r'19\d{2}[0-1][0-9][0-3][0-9]|20\d{2}[0-1][0-9][0-3][0-9]+/g'
 t_NAME = r'NAM[\/]+/g'
 t_EVENT_START = r'ARR[\/]DET[\/]C'
 t_COURT_HEADER = r'COURT[:]'
-t_INDEX = r'[ :]0\d{2}'
+t_INDEX = r'0\d{2}' # 0 as the first digit, supposing a person doesn't commit over 99 crimes
 t_TOC_LABEL = r'TOC[:][A-Z]'
-t_DOB_LABEL = r'DOB[:\/]'
+t_DOB_LABEL = r'DOB[:\/]\d+'
 t_DISPO_LABEL = r'DISPO[:]'
 t_ID_NUM = r'\#\w+'
 t_CNT_LABEL = r'CNT'
+t_HEIGHT = r'HGT[\/]\d+'
+t_WEIGHT = r'WGT[\/]\d+'
+t_EYE_COLOR = r'EYE[\/]\w+'
 t_CRIME_CATEGORY = r'[A-Z][A-Z][-]'
+t_AGENCY_ID = r'CASO|CAPD|CASC|CACB|CAMC'
 #t_WORD = r'[A-Z_][A-Z0-9_,]*' # text can't start with a number
 
 # Define a rule so we can track line numbers
