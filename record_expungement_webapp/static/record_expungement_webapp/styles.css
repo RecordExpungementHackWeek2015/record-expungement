@@ -164,7 +164,10 @@ input[type=submit] {
 .row-2 [class*="col-"]:first-child {
     margin-left: -20px;
 }
-
+.col-middle {
+    float: left;
+    width: 35%;
+}
 .col-4 {
     float: left;
     width: 25%;

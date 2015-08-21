@@ -158,15 +158,9 @@
       <div class="row-2 clearfix">
         <div class="col-left">Address</div>
         <div class="col-right">
-          {{ info_form.address }}
-          {% if info_form.address.errors %}{% for error in info_form.address.errors %}{{ error|escape }}{% endfor %}{% endif %}
-        </div>
-      </div>
-      <div class="row-2 clearfix">
-        <div class="col-left">&nbsp;</div>
-        <div class="col-right">
-          {{ info_form.city }} {{ info_form.state }} {{ info_form.zip_code }}
-          {% if info_form.city.errors %}{% for error in info_form.city.errors %}{{ error|escape }}{% endfor %}
+          {{ info_form.address }} {{ info_form.city }} {{ info_form.state }} {{ info_form.zip_code }}
+          {% if info_form.address.errors %}{% for error in info_form.address.errors %}{{ error|escape }}{% endfor %}
+          {% elif info_form.city.errors %}{% for error in info_form.city.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.state.errors %}{% for error in info_form.state.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.zip_code.errors %}{% for error in info_form.zip_code.errors %}{{ error|escape }}{% endfor %}
           {% endif %}
@@ -190,15 +184,9 @@
       <div class="row-2 clearfix">
         <div class="col-left">Address</div>
         <div class="col-right">
-          {{ info_form.employer_address }}
-          {% if info_form.employer_address.errors %}{% for error in info_form.employer_address.errors %}{{ error|escape }}{% endfor %}{% endif %}
-        </div>
-      </div>
-      <div class="row-2 clearfix">
-        <div class="col-left">&nbsp;</div>
-        <div class="col-right">
-          {{ info_form.employer_city }} {{ info_form.employer_state }} {{ info_form.employer_zip_code }}
-          {% if info_form.employer_city.errors %}{% for error in info_form.employer_city.errors %}{{ error|escape }}{% endfor %}
+          {{ info_form.employer_address }} {{ info_form.employer_city }} {{ info_form.employer_state }} {{ info_form.zip_code }}
+          {% if info_form.employer_address.errors %}{% for error in info_form.employer_address.errors %}{{ error|escape }}{% endfor %}
+          {% elif info_form.employer_city.errors %}{% for error in info_form.employer_city.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.employer_state.errors %}{% for error in info_form.employer_state.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.employer_zip_code.errors %}{% for error in info_form.employer_zip_code.errors %}{{ error|escape }}{% endfor %}
           {% endif %}

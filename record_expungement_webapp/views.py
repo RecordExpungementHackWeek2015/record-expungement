@@ -94,11 +94,19 @@ def complete_personal_info(request):
     return HttpResponse(template.render(context))
 
 
-def _long_text_input(num=None):
+def _long_text_input(num=None, placeholder=None):
     if num:
-        return forms.TextInput(attrs={'placeholder': '(%d)' % num, 'size': '35'})
+        return forms.TextInput(attrs={'placeholder': '(%d)' % num, 'size': '30'})
+    elif placeholder:
+        return forms.TextInput(attrs={'placeholder': placeholder, 'size': '30'})
     else:
-        return forms.TextInput(attrs={'size': '35'})
+        return forms.TextInput(attrs={'size': '30'})
+
+def _short_text_input(placeholder=None):
+    if placeholder:
+        return forms.TextInput(attrs={'placeholder': placeholder, 'size': '10'})
+    else:
+        return forms.TextInput(attrs={'size': '10'})
 
 def _amt_input():
     return forms.TextInput(attrs={'placeholder': '($)', 'size': '10'})
@@ -108,24 +116,24 @@ class PersonalInfoForm(forms.Form):
     name_address_fields = ('fname', 'mname', 'lname', 'address', 'city', 'state', 'zip_code',
         'job_title', 'employer_name', 'employer_address', 'employer_city', 'employer_state', 'employer_zip_code')
 
-    fname = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'First name'}))
-    mname = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Middle name'}))
-    lname = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Last name'}))
+    fname = forms.CharField(max_length=100, widget=_long_text_input(placeholder='First name'))
+    mname = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Middle name'))
+    lname = forms.CharField(max_length=100, widget=_long_text_input(placeholder='Last name'))
 
-    address = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Street or mailing address', 'size': '40'}))
-    city = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'City', 'size': '20'}))
-    state = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder': 'State', 'size': '5'}))
-    zip_code = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder': 'Zip code', 'size': '10'}))
+    address = forms.CharField(max_length=100, widget=_long_text_input(placeholder='Street address'))
+    city = forms.CharField(max_length=100, widget=_long_text_input(placeholder='City'))
+    state = forms.CharField(max_length=10, widget=_short_text_input(placeholder='State'))
+    zip_code = forms.CharField(max_length=10, widget=_short_text_input(placeholder='Zip code'))
 
-    email = forms.CharField(label='Email', max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Email address', 'size': '40'}))
-    phone = forms.CharField(label='Phone', max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Phone number', 'size': '40'}))
+    email = forms.CharField(label='Email', max_length=100, required=False, widget=_long_text_input(placeholder='Email address'))
+    phone = forms.CharField(label='Phone', max_length=20, widget=_long_text_input(placeholder='Phone number'))
 
-    job_title = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Job title', 'size': '40'}))
-    employer_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Name of employer', 'size': '40'}))
-    employer_address = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Street or mailing address', 'size': '40'}))
-    employer_city = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'City', 'size': '20'}))
-    employer_state = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder': 'State', 'size': '5'}))
-    employer_zip_code = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder': 'Zip code', 'size': '10'}))
+    job_title = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Job title'))
+    employer_name = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Name of employer'))
+    employer_address = forms.CharField(max_length=100, widget=_long_text_input(placeholder='Street address'))
+    employer_city = forms.CharField(max_length=100, widget=_long_text_input(placeholder='City'))
+    employer_state = forms.CharField(max_length=10, widget=_short_text_input(placeholder='State'))
+    employer_zip_code = forms.CharField(max_length=10, widget=_short_text_input(placeholder='Zip code'))
 
     benefit_0 = forms.BooleanField(label='FOOD_STAMPS', required=False)
     benefit_1 = forms.BooleanField(label='SUPP_SEC_INC', required=False)
@@ -136,7 +144,7 @@ class PersonalInfoForm(forms.Form):
     benefit_6 = forms.BooleanField(label='CALWORKS_OR_TRIBAL_TANF', required=False)
     benefit_7 = forms.BooleanField(label='CAPI', required=False)
 
-    family_size = forms.CharField(label='Family size', max_length=2, widget=forms.TextInput(attrs={'placeholder': '', 'size': '3'}))
+    family_size = forms.CharField(label='Family size', max_length=2, widget=_short_text_input())
     family_income = forms.CharField(label='Family income', max_length=10, help_text='Gross monthly household income (before deductions for taxes)',
         widget=forms.TextInput(attrs={'placeholder': '', 'size': '10'}))
 
@@ -152,19 +160,19 @@ class PersonalInfoForm(forms.Form):
     name_amount_2_monthly_4 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
 
     wage_earner_title_1 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(1))
-    wage_earner_age_1 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_age_1 = forms.CharField(label='Age', max_length=3, widget=_short_text_input(), required=False)
     wage_earner_relationship_1 = forms.CharField(label='Relationship', max_length=50, required=False, widget=_long_text_input())
     wage_earner_amount_1 = forms.CharField(label='Amount', max_length=10, required=False, widget=_amt_input())
     wage_earner_title_2 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(2))
-    wage_earner_age_2 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_age_2 = forms.CharField(label='Age', max_length=3, widget=_short_text_input(), required=False)
     wage_earner_relationship_2 = forms.CharField(label='Relationship', max_length=50, required=False, widget=_long_text_input())
     wage_earner_amount_2 = forms.CharField(label='Amount', max_length=10, required=False, widget=_amt_input())
     wage_earner_title_3 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(3))
-    wage_earner_age_3 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_age_3 = forms.CharField(label='Age', max_length=3, widget=_short_text_input(), required=False)
     wage_earner_relationship_3 = forms.CharField(label='Relationship', max_length=50, required=False, widget=_long_text_input())
     wage_earner_amount_3 = forms.CharField(label='Amount', max_length=10, required=False, widget=_amt_input())
     wage_earner_title_4 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(4))
-    wage_earner_age_4 = forms.CharField(label='Age', max_length=3, widget=forms.TextInput(attrs={'size': '3'}), required=False)
+    wage_earner_age_4 = forms.CharField(label='Age', max_length=3, widget=_short_text_input(), required=False)
     wage_earner_relationship_4 = forms.CharField(label='Relationship', max_length=50, required=False, widget=_long_text_input())
     wage_earner_amount_4 = forms.CharField(label='Amount', max_length=10, required=False, widget=_amt_input())
 
@@ -230,7 +238,7 @@ class PersonalInfoForm(forms.Form):
     name_amount_2_installment_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
     long_wages = forms.CharField(label='m. Wages/earnings withheld by court order', max_length=10,
-        widget=forms.TextInput(attrs={'placeholder': '($)', 'size': '10'}), required=False)
+        widget=_amt_input(), required=False)
 
     name_amount_1_other_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
     name_amount_2_other_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
