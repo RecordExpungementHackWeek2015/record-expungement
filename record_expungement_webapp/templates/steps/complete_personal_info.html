@@ -10,23 +10,25 @@
 </div>
 
 <div class="top-level-section gray">
-  <h2>Section 1 - Primary info</h2>
-  <div class="row-2 clearfix">
-    <div class="col-left">DOB</div>
-    <div class="col-right">{{ rap_sheet.dob|date:"SHORT_DATE_FORMAT" }}</div>
-  </div>
-  <div class="row-2 clearfix">
-    <div class="col-left">Sex</div>
-    <div class="col-right">{{ rap_sheet.sex }}</div>
-  </div>
-  <div class="row-2 clearfix">
-    <div class="col-left">Names</div>
-    <div class="col-right">
-      {% for name in rap_sheet.names_as_charged %}
-        <div>
-          {{ name }}
-        </div>
-      {% endfor %}
+  <div class='inner'>
+    <h2>Section 1 - Primary info</h2>
+    <div class="row-2 clearfix">
+      <div class="col-left">DOB</div>
+      <div class="col-right">{{ rap_sheet.dob|date:"SHORT_DATE_FORMAT" }}</div>
+    </div>
+    <div class="row-2 clearfix">
+      <div class="col-left">Sex</div>
+      <div class="col-right">{{ rap_sheet.sex }}</div>
+    </div>
+    <div class="row-2 clearfix">
+      <div class="col-left">Names</div>
+      <div class="col-right">
+        {% for name in rap_sheet.names_as_charged %}
+          <div>
+            {{ name }}
+          </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div><!-- end primary info -->
@@ -36,21 +38,33 @@
   {{ info_form.non_field_errors }}
 
   <div class="top-level-section gray">
-    <h2>Section 2 - Events</h2>
+    <div class='inner'>
+      <h2>Section 2 - Events</h2>
+    </div>
     {% for event, waiver_field in info_form.waiver_fields %}
-      <div class="indent-1 event">
-        {% if event.needs_declaration %}
-        Needs declaration
-          {% for reason in event.needs_declaration_reasons %}
-            {{ reason }}
-          {% endfor %}
+      <div class='inner'>
+        {% if forloop.counter > 1 %}
+        <div class='separator'></div>
         {% endif %}
+
         <h3>Arrest ID {{ event.arrest_info.arrest_id }}</h3>
-        <div class="row-2 clearfix">
-          <div class="col-both">
-            {{ waiver_field }} Check here if you asked the court to waive your court fees for this case in the last six months.
+        {% if event.needs_declaration %}
+          <div class="row-2 clearfix declaration-box">
+            <div class="col-both">
+              This event needs a declaration. Reasons:
+              {% for reason in event.needs_declaration_reasons %}
+                {{ reason }}
+              {% endfor %}
+            </div>
           </div>
-        </div>
+        {% endif %}
+        {% if event.has_any_eligible %}
+          <div class="row-2 clearfix waiver-box">
+            <div class="col-both">
+              {{ waiver_field }} Check here if you asked the court to waive your court fees for this case in the last six months.
+            </div>
+          </div>
+        {% endif %}
         <div class="row-2 clearfix">
           <div class="col-left">Date</div>
           <div class="col-right">{{ event.arrest_info.date|date:"SHORT_DATE_FORMAT" }}</div>
@@ -59,13 +73,13 @@
           <div class="col-left">City</div>
           <div class="col-right">{{ event.arrest_info.city }}</div>
         </div>
-        <div class="row-2 clearfix">
+        <!-- <div class="row-2 clearfix">
           <div class="col-left">DOB</div>
           <div class="col-right">{{ event.listed_dob|date:"SHORT_DATE_FORMAT"}}</div>
-        </div>
+        </div> -->
 
         {% for case_info in event.associated_cases %}
-          <div class="case">
+          <div class="inner-section">
             <h3>Case ID {{ case_info.case_id }}</h3>
             <div class="row-2 clearfix">
               <div class="col-left">Date</div>
@@ -75,8 +89,8 @@
               <div class="col-left">County</div>
               <div class="col-right">{{ case_info.county }}</div>
             </div>
-            <h3>Counts</h3>
-            <div>
+            <div class="inner-section">
+              <h3>Counts</h3>
               {% for count in case_info.counts %}
                 <div class="row-2 clearfix">
                   <div class="col-num">{{ forloop.counter }}</div>
@@ -112,7 +126,7 @@
               </div>
               {% endfor %}
             </div>
-            <div>
+            <div class="inner-section">
               <h3>Sentence</h3>
                 {% if case_info.sentence.probation_duration %}
                 <div class="row-2 clearfix">
@@ -141,14 +155,14 @@
   </div> <!-- end events -->
 
   <div class="top-level-section gray">
-    <h2>Section 3 - Personal Info</h2>
-    <div>
-      <h4>Your Information</h4>
+    <div class='inner'>
+      <h2>Section 3 - Personal Info</h2>
+      <h3>Your Information</h3>
       <p class='description'>(Person asking the court to waive the fees)</p>
       <div class="row-2 clearfix">
         <div class="col-left">Name</div>
         <div class="col-right">
-          {{ info_form.fname }} {{ info_form.mname }} {{ info_form.lname }}
+          {{ info_form.fname }}<span class='spacer'></span>{{ info_form.mname }}<span class='spacer'></span>{{ info_form.lname }}
           {% if info_form.fname.errors %}{% for error in info_form.fname.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.mname.errors %}{% for error in info_form.mname.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.lname.errors %}{% for error in info_form.lname.errors %}{{ error|escape }}{% endfor %}
@@ -158,7 +172,7 @@
       <div class="row-2 clearfix">
         <div class="col-left">Address</div>
         <div class="col-right">
-          {{ info_form.address }} {{ info_form.city }} {{ info_form.state }} {{ info_form.zip_code }}
+          {{ info_form.address }}<span class='spacer'></span>{{ info_form.city }}<span class='spacer'></span>{{ info_form.state }}<span class='spacer'></span>{{ info_form.zip_code }}
           {% if info_form.address.errors %}{% for error in info_form.address.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.city.errors %}{% for error in info_form.city.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.state.errors %}{% for error in info_form.state.errors %}{{ error|escape }}{% endfor %}
@@ -166,7 +180,7 @@
           {% endif %}
           </div>
       </div>
-      <h4>Your Job</h4>
+      <h3>Your Job</h3>
       <div class="row-2 clearfix">
         <div class="col-left">Job title</div>
         <div class="col-right">
@@ -184,7 +198,7 @@
       <div class="row-2 clearfix">
         <div class="col-left">Address</div>
         <div class="col-right">
-          {{ info_form.employer_address }} {{ info_form.employer_city }} {{ info_form.employer_state }} {{ info_form.zip_code }}
+          {{ info_form.employer_address }}<span class='spacer'></span>{{ info_form.employer_city }}<span class='spacer'></span>{{ info_form.employer_state }}<span class='spacer'></span>{{ info_form.employer_zip_code }}
           {% if info_form.employer_address.errors %}{% for error in info_form.employer_address.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.employer_city.errors %}{% for error in info_form.employer_city.errors %}{{ error|escape }}{% endfor %}
           {% elif info_form.employer_state.errors %}{% for error in info_form.employer_state.errors %}{{ error|escape }}{% endfor %}
@@ -192,7 +206,7 @@
           {% endif %}
           </div>
       </div>
-      <h4>Contact Information</h4>
+      <h3>Contact Information</h3>
       {% for field in info_form %}
       {% if "waiver_" in field.name %}
       <!-- dynamic fields to be rendered separately -->
@@ -200,18 +214,18 @@
       <!-- rendered above -->
       {% else %}
         {% if "benefit_0" == field.name %}
-        <h4>Why are you asking the court to waive your court fees?</h4>
+        <h3>Why are you asking the court to waive your court fees?</h3>
         <p>I receive <i>(check all that apply; see form FW-001-INFO for definitions)</i>:</p>
 
         {% elif "name_amount_1_monthly_1" == field.name %}
-          <h4>Your Gross Monthly Income</h4>
+          <h3>Your Gross Monthly Income</h3>
           <p class='description'>List the source and amount of any income you get each month, including: wages or other income from work before deductions, spousal/child support, retirement, social security, disability, unemployment, military basic allowance for quarters (BAQ), veterans payments, dividends, interest, trust income, annuities, net business or rental income, reimbursement for job-related expenses, gambling or lottery winnings, etc.</p>
           <div class="row-4 clearfix">
             <div class="col-4 help-text">Job title</div>
             <div class="col-4-small help-text">Amount</div>
           </div>
         {% elif "wage_earner_title_1" == field.name %}
-          <h4>Household Income</h4>
+          <h3>Household Income</h3>
           <p class='description'>List the income of all other persons living in your home who depend in whole or in part on you for support, or on whome you depend in whole or in part for support.</p>
           <div class="row-4 clearfix">
             <div class="col-4 help-text">Name</div>
@@ -220,7 +234,7 @@
             <div class="col-4 help-text">Gross Monthly Income</div>
           </div>
         {% elif "cash" == field.name %}
-        <h4>Your Money and Property</h4>
+        <h3>Your Money and Property</h3>
 
         {% elif "asset_1_vehicle_1" == field.name %}
           <p class="subheading">c. Cars, boats, and other vehicles</p>
@@ -246,7 +260,7 @@
         {% elif "name_amount_1_bank_1" == field.name %}
           <p class="subheading">b. All financial accounts (list bank name and amount)</p>
         {% elif "name_amount_1_payroll_1" == field.name %}
-          <h4>Your Monthly Deductions and Expenses</h4>
+          <h3>Your Monthly Deductions and Expenses</h3>
           <p class="subheading">a. List any payroll deductions and the monthly amount below.</p>
         {% elif "name_amount_1_installment_1" == field.name %}
           <p class="subheading">l. Installment payments</p>
@@ -318,7 +332,7 @@
           <div class="row-2 clearfix">
             <div class="col-left">{{ field.label }}</div>
             <div class="col-right">
-              {{ field }} <span class='help-text'>{{ field.help_text }}</span>
+              {{ field }}<span class='spacer'></span><span class='help-text'>{{ field.help_text }}</span>
               {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
             </div>
           </div>

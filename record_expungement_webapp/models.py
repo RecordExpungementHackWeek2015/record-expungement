@@ -3,7 +3,7 @@ import datetime
 
 
 class Name:
-    def __init__(self, last=None, first=None, middle=None):
+    def __init__(self, first=None, middle=None, last=None):
         """
         :type last: str
         :type middle: str
@@ -34,7 +34,7 @@ class Address:
         return self._to_str("\n")
 
     def to_str_one_line(self):
-        return self._to_str(" ")
+        return self._to_str("")
 
     def _to_str(self, line_delimiter):
         """
@@ -92,6 +92,7 @@ class CrimeCategory:
     FELONY = "FELONY"
     MISDEMEANOR = "MISDEMEANOR"
     INFRACTION = "INFRACTION"  # These don't matter except for it means they violated probation
+    ALL = (FELONY, MISDEMEANOR, INFRACTION,)
 
 
 class IncarcerationType:
@@ -220,7 +221,7 @@ class Event:
         :type arrest_info: ArrestInfo
         :type listed_dob: datetime.date
         :type associated_cases: list[CaseInfo]
-        :type probation_modifications: list[ProbationModification]
+        :type probation_modifications: list
         """
         self.arrest_info = arrest_info
         self.listed_dob = listed_dob
@@ -230,16 +231,12 @@ class Event:
         # FILL_ME_IN_LATER
         self.needs_declaration_reasons = []  # List of NeedDeclarationReason
 
+    def has_any_eligible(self):
+        return any(self.get_convictions_of_type(category) for category in CrimeCategory.ALL)
+
     # Display star next to event. List out reasons.
     def needs_declaration(self):
         return bool(self.needs_declaration_reasons)
-
-    def completed_probation(self):
-        return NeedsDeclarationReason.PROBATION_VIOLATED in self.needs_declaration_reasons
-
-    # TODO: ACTUALLY IMPLEMENT THIS
-    def probation_terminated_early(self):
-        return False and self
 
     def get_convictions_of_type(self, crime_category):
         """
@@ -257,10 +254,6 @@ class Event:
     def get_eligible_convictions_of_type(self, crime_category):
         return [count for count in self.get_convictions_of_type(crime_category)
                 if not count.ineligible_for_expungement_reasons]
-
-    def has_eligible_convictions(self):
-        return self.associated_cases and [count for count in self.associated_cases[0].counts
-                                          if not count.ineligible_for_expungement_reasons]
 
 
 class RAPSheet:
@@ -303,11 +296,7 @@ class StateBenefit:
 
 
 class MonthlyIncomeSource:
-    def __init__(self, job_title=None, monthly_income=None):
-        """
-        :type job_title: str
-        :type monthly_income: int
-        """
+    def __init__(self):
         self.job_title = None
         self.monthly_income = None
 
@@ -343,7 +332,6 @@ class Vehicle:
         self.make_and_year = None  # str
         self.asset_value = None  # AssetValue
 
-
 class RealEstate:
     def __init__(self):
         self.address = None  # str
@@ -357,14 +345,11 @@ class PersonalProperty:
 
 
 class MoneyAndProperty:
-    def __init__(self, real_estate=None):
-        """
-        :type real_estate: list[RealEstate]
-        """
+    def __init__(self):
         self.total_cash = None  # int (dollars)
         self.bank_accounts = []  # BankAccount
-        self.vehicles = []  # List VehicleInfo
-        self.real_estate = real_estate  # List RealEstate
+        self.vehicles = []  # List Vehicle
+        self.real_estate = []  # List RealEstate
         self.other_property = []  # List Property
 
 
@@ -438,7 +423,7 @@ class FinancialInfo:
         self.monthly_deductions_and_expenses = monthly_deductions_and_expenses  # MonthlyDeductionsAndExpenses
 
     def is_monthly_income_below_threshold(self):
-        return False and self  # something with family_size and total_family_income
+        return False # something with family_size and total_family_income
 
 
 class PersonalHistory:

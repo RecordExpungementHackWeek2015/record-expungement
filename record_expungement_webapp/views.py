@@ -130,10 +130,10 @@ class PersonalInfoForm(forms.Form):
 
     job_title = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Job title'))
     employer_name = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Name of employer'))
-    employer_address = forms.CharField(max_length=100, widget=_long_text_input(placeholder='Street address'))
-    employer_city = forms.CharField(max_length=100, widget=_long_text_input(placeholder='City'))
-    employer_state = forms.CharField(max_length=10, widget=_short_text_input(placeholder='State'))
-    employer_zip_code = forms.CharField(max_length=10, widget=_short_text_input(placeholder='Zip code'))
+    employer_address = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Street address'))
+    employer_city = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='City'))
+    employer_state = forms.CharField(max_length=10, required=False, widget=_short_text_input(placeholder='State'))
+    employer_zip_code = forms.CharField(max_length=10, required=False, widget=_short_text_input(placeholder='Zip code'))
 
     benefit_0 = forms.BooleanField(label='FOOD_STAMPS', required=False)
     benefit_1 = forms.BooleanField(label='SUPP_SEC_INC', required=False)

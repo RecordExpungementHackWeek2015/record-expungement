@@ -6,7 +6,7 @@ button,
 .normal {
     font-family: "Open Sans";
     font-size: 13px;
-    color: #000;
+    color: #3d464d;
     font-weight: normal;
 }
 
@@ -38,30 +38,27 @@ h1 {
     font-size: 18pt;
     font-weight: normal;
     margin: 10px 0;
-    color: #666;
 }
 
 h2 {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-bottom: 4px;
-    font-size: 14pt;
-    color: #666;
+    padding-bottom: 10px;
+    font-size: 18pt;
+    font-weight: normal;
+    margin: 10px 0;
 }
-
+/*
 h3 {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
     margin: 0;
     font-size: 12pt;
-    color: #666;
-}
+}*/
 
-h4 {
+h3, h4 {
     margin: 0;
     padding-top: 5px;
     padding-bottom: 5px;
     font-weight: bold;
+    font-size: 11pt;
 }
 
 button {
@@ -76,33 +73,35 @@ form {
   padding: 0;
   margin: 0;
 }
-
+.spacer {
+    padding: 1em;
+}
 .description {
     font-style: italic;
 }
-.indent-1 {
-    padding: 0 2em;
+.inner {
+    padding-left: 2.5em;
+    padding-right: 2.5em;
 }
-.event {
-    padding-bottom: 1.5em;
-}
-.case {
-    padding-left: 2em;
-}
-.count {
-    padding-bottom: 2em;
-}
-.eligibility {
+.inner-section {
+    padding-top: 1.2em;
 }
 .top-level-section {
     margin: 2em 0em;
 }
-.subheading {
-    color: #666;
+.waiver-box {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+.declaration-box {
+    font-size: 11pt;
+    color: #ed7a6f;
+    padding-top: 1em;
+    padding-bottom: 0.5em;
 }
 .gray {
     background-color: #eee;
-    padding: 1em;
+    padding: 1.5em 1em 2em 1em;
     border-radius: 3px;
 }
 input[type=submit] {
@@ -137,14 +136,18 @@ input[type=submit] {
 [class*="col-"]:last-child {
     margin-right: 0;
 }
+.separator {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    height: 1px;
+    border-bottom: 1px solid #ccc;
+}
 .help-text {
     font-size: 8pt;
-    color: #000;
 }
 .col-left {
     float: left;
     width: 8%;
-    color: #666;
     white-space: nowrap;
 }
 .col-right {
