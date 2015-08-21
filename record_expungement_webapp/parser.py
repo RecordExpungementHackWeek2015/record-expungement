@@ -1,6 +1,6 @@
 # parser.py
 #
-# See if I can parse my test lines!
+# Authoress: Della Anjeh
 import ply.lex as lex
 import ply.yacc as yacc
 
@@ -179,6 +179,13 @@ def find_indexes(data):
             break
     return indexes
 
+#test indexes from data to pass into split_record
+indexes = [317, 465, 627, 735]
+
+#test indexes from good_data to pass into split_record
+good_indexes = [338, 754, 870, 973, 1052, 1160, 1276, 1332]
+
+#THIS WORKS!
 def split_record(data, indexes):
     sections = []
     last_char_index = len(data) - 1
@@ -191,12 +198,6 @@ def split_record(data, indexes):
     last_record = data[indexes[-1]:last_char_index]
     sections.append(last_record)
     return sections
-
-#test indexes from data to pass into split_record
-indexes = [317, 465, 627, 735]
-
-#test indexes from good_data to pass into split_record
-good_indexes = [338, 754, 870, 973, 1052, 1160, 1276, 1332]
 
 # Tokenize the data
 while True:
