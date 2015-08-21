@@ -474,7 +474,7 @@ def _generate_forms(request):
         shutil.rmtree(packet_base_folder)
 
     for i, event in enumerate(personal_history.rap_sheet.events):
-        if event.has_eligible_convictions():
+        if event.has_eligible_convictions():  # TODO change this to has any eligible
             event_subfolder = FormUtil.date_to_str(event.arrest_info.date) + "_arrest"
             packet_output_folder = os.path.join(packet_base_folder, str(event_subfolder))
             PacketFactory.generate(personal_history, event, packet_output_folder, forms_dir_path)

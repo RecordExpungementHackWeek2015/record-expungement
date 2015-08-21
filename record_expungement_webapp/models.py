@@ -245,6 +245,14 @@ class Event:
     def needs_declaration(self):
         return bool(self.needs_declaration_reasons)
 
+    # TODO - REVISIT THIS LOGIC
+    def completed_probation(self):
+        return NeedsDeclarationReason.PROBATION_VIOLATED not in self.needs_declaration_reasons
+
+    # TODO: ACTUALLY IMPLEMENT THIS
+    def probation_terminated_early(self):
+         return False and self
+
     def get_convictions_of_type(self, crime_category):
         """
         :type crime_category: CrimeCategory
@@ -261,6 +269,10 @@ class Event:
     def get_eligible_convictions_of_type(self, crime_category):
         return [count for count in self.get_convictions_of_type(crime_category)
                 if not count.ineligible_for_expungement_reasons]
+
+    def has_eligible_convictions(self):
+        return self.associated_cases and [count for count in self.associated_cases[0].counts
+                                          if not count.ineligible_for_expungement_reasons]
 
 
 class RAPSheet:

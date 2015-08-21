@@ -141,7 +141,7 @@ class FW001Model(FormModel):
         for i, expense in enumerate(md.other_monthly_expenses):
             descriptions.append(("11n%(i)sa" % {'i': i+1}, expense.recipient))
             dollar_amounts.append(("11n%(i)sb" % {'i': i+1}, expense.amount))
-        other_expenses_total = sum([int(expense.amount) for expense in md.other_monthly_expenses])
+        other_expenses_total = sum([int(expense.amount) for expense in md.other_monthly_expenses if expense.amount])
         # dollar_amounts.append(("11n", other_expenses_total))
 
         total = sum(int(amount) for (label, amount) in dollar_amounts if amount)
