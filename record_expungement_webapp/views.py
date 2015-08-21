@@ -1,5 +1,6 @@
 import cStringIO
 import pickle
+import os
 from django import forms
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -10,6 +11,7 @@ from django.template import RequestContext
 from record_expungement_webapp import mocks
 from record_expungement_webapp import models
 from logic_engine import ExpungementLogicEngine
+from packet_factory import PacketFactory
 
 
 # File upload form.
@@ -26,7 +28,7 @@ def start(request):
 
 
 def _clear_session(request):
-    keys = ('filename', 'filesize', 'rap_sheet', 'personal_history')
+    keys = ('rap_sheet', 'personal_history')
     for key in keys:
         try:
             del request.session[key]
@@ -50,8 +52,6 @@ def upload_rap_sheet(request):
             rap_sheet = _process_rap_sheet(uploaded_file)
 
             request.session['rap_sheet'] = pickle.dumps(rap_sheet)
-            request.session['filename'] = uploaded_file.name
-            request.session['filesize'] = uploaded_file.size
 
             return HttpResponseRedirect('/webapp/complete_personal_info')
     else:
@@ -75,20 +75,16 @@ def _load_vars_from_session(request):
     rap_sheet = request.session.get('rap_sheet')
     rap_sheet = pickle.loads(rap_sheet)
 
-    filename = request.session.get('filename')
-    filesize = request.session.get('filesize')
-    return filename, filesize, rap_sheet
+    return rap_sheet
 
 
 # Render the parsed rap sheet and personal info form.
 def complete_personal_info(request):
-    filename, filesize, rap_sheet = _load_vars_from_session(request)
+    rap_sheet = _load_vars_from_session(request)
 
     template = loader.get_template('steps/complete_personal_info.html')
     info_form = PersonalInfoForm(events=rap_sheet.events)
     context = RequestContext(request, {
-        'filename': filename,
-        'filesize': filesize,
         'rap_sheet': rap_sheet,
         'info_form': info_form,
     })
@@ -98,7 +94,7 @@ def complete_personal_info(request):
 # Personal and financial info form.
 class PersonalInfoForm(forms.Form):
     fname = forms.CharField(label='First name', max_length=100)
-    mname = forms.CharField(label='Middle name', max_length=100, required=False)
+    mname = forms.CharField(label='Middle name (Optional)', max_length=100, required=False)
     lname = forms.CharField(label='Last name', max_length=100)
 
     address = forms.CharField(label='Address', max_length=100)
@@ -381,7 +377,6 @@ class PersonalInfoForm(forms.Form):
                 result.append(self[name])
         return zip(self.events, result)
 
-
     # Get map of event index to if fees were waived before
     # i.e. {0: False, 1: False, 2: False}
     def _get_event_to_waiver_status(self):
@@ -403,9 +398,10 @@ class PersonalInfoForm(forms.Form):
                     benefits.append(idx)
         return benefits
 
+
 # Process personal info input.
 def submit_personal_info(request):
-    filename, filesize, rap_sheet = _load_vars_from_session(request)
+    rap_sheet = _load_vars_from_session(request)
 
     if request.method == 'POST':
         info_form = PersonalInfoForm(request.POST, events=rap_sheet.events)
@@ -422,8 +418,6 @@ def submit_personal_info(request):
 
     template = loader.get_template('steps/complete_personal_info.html')
     context = RequestContext(request, {
-        'filename': filename,
-        'filesize': filesize,
         'rap_sheet': rap_sheet,
         'info_form': info_form
     })
@@ -437,8 +431,18 @@ def success(request):
 
 
 def _generate_forms(request):
+
     personal_history = pickle.loads(request.session['personal_history'])
-    print personal_history
+
+    DIR_FOR_ALL_SESSIONS = "outputs"
+    SUBFOLDER_FOR_THIS_SESSION = "session_" + request.session.session_key
+    FORMS_FOLDER = "static/forms"
+    for i, event in enumerate(personal_history.rap_sheet.events):
+        EVENT_SUBFOLDER = i
+        if event.has_eligible_convictions():
+            packet_output_folder = os.path.join(os.getcwd(), DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION, i)
+            resources_directory = os.path.join(os.getcwd(), FORMS_FOLDER)
+            PacketFactory.generate(personal_history, event, packet_output_folder, resources_directory)
 
     buf = cStringIO.StringIO()
     buf.write(str(personal_history))

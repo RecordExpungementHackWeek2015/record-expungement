@@ -5,6 +5,10 @@ import subprocess
 
 class FormFiller:
     def __init__(self, form_name, form_location):
+        """
+        :type form_location: str
+        :type form_name: str
+        """
         self.form_name = form_name
         self.form_location = form_location
 
@@ -15,9 +19,14 @@ class FormFiller:
             return json.load(json_file)
 
     def fill(self, fields_json, output_pdf_path, form_filler_bin=None):
-        if form_filler_bin is None:
+        """
+        :type output_pdf_path: str
+        :type fields_json: json
+        """
+        if not form_filler_bin:
             from django.conf import settings
-            assert hasattr(settings, 'FORM_FILLER_BIN'), "PDF generation requires form_filler. Edit your FORM_FILLER_BIN settings accordingly."
+            assert hasattr(settings, 'FORM_FILLER_BIN'), \
+                "PDF generation requires form_filler. Edit your FORM_FILLER_BIN settings accordingly."
             form_filler_bin = settings.FORM_FILLER_BIN
 
         input_pdf_path = os.path.join(self.form_location, self.form_name)

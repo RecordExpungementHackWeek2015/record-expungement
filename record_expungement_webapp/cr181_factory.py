@@ -1,12 +1,20 @@
-from form_util import FormUtil
+from form_util import FormUtil, FormModel
 
 
-class CR181Factory:
+class CR181Model(FormModel):
     def __init__(self):
         raise ValueError("Don't construct me")
 
     @staticmethod
-    def generate(ph, event):
+    def get_name():
+        return "cr_180"
+
+    @staticmethod
+    def get_output_file_name():
+        return "cr_180.pdf"
+
+    @staticmethod
+    def get_fields(ph, event):
         """
         :type ph: PersonalHistory
         :type event: Event

@@ -3,11 +3,11 @@ from special_case_offenses import WobblerOffensesModel, IneligibleOffensesModel
 from county_court_info import SanMateoCountyCourt
 from models import PersonalHistory, IneligibilityReason, DispositionDecision, CrimeCategory, NeedsDeclarationReason, \
     IncarcerationType, Count, CaseInfo
-from cr180_factory import CR180Factory
-from cr181_factory import CR181Factory
-from fw001_factory import FW001Factory
-from fw003_factory import FW003Factory
-from pos040_factory import POS040Factory
+from cr180_factory import CR180Model
+from cr181_factory import CR181Model
+from fw001_factory import FW001Model
+from fw003_factory import FW003Model
+from pos040_factory import POS040Model
 
 
 class ExpungementLogicEngine:
@@ -136,8 +136,8 @@ class ExpungementLogicEngine:
 
     def generate_expungement_packets(self):
         for event in self.personal_history.rap_sheet.events:
-            CR180Factory.generate(self.personal_history, event)
-            CR181Factory.generate(self.personal_history, event)
-            FW001Factory.generate(self.personal_history, event)
-            FW003Factory.generate(self.personal_history, event)
-            POS040Factory.generate(self.personal_history, event)
+            CR180Model.generate(self.personal_history, event)
+            CR181Model.generate(self.personal_history, event)
+            FW001Model.generate(self.personal_history, event)
+            FW003Model.generate(self.personal_history, event)
+            POS040Model.generate(self.personal_history, event)
