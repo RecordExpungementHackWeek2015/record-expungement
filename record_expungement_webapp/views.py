@@ -114,7 +114,7 @@ def _amt_input():
 # Personal and financial info form.
 class PersonalInfoForm(forms.Form):
     name_address_fields = ('fname', 'mname', 'lname', 'address', 'city', 'state', 'zip_code',
-        'job_title', 'employer_name', 'employer_address', 'employer_city', 'employer_state', 'employer_zip_code')
+        'job_title', 'employer', 'employer_address', 'employer_city', 'employer_state', 'employer_zip_code')
 
     fname = forms.CharField(max_length=100, widget=_long_text_input(placeholder='First name'))
     mname = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Middle name'))
@@ -129,7 +129,7 @@ class PersonalInfoForm(forms.Form):
     phone = forms.CharField(label='Phone', max_length=20, widget=_long_text_input(placeholder='Phone number'))
 
     job_title = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Job title'))
-    employer_name = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Name of employer'))
+    employer = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Name of employer'))
     employer_address = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='Street address'))
     employer_city = forms.CharField(max_length=100, required=False, widget=_long_text_input(placeholder='City'))
     employer_state = forms.CharField(max_length=10, required=False, widget=_short_text_input(placeholder='State'))
@@ -150,14 +150,14 @@ class PersonalInfoForm(forms.Form):
 
     income_changes = forms.BooleanField(label='Check here if your income changes a lot from month to month.', required=False)
 
-    name_amount_1_monthly_1 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(1))
-    name_amount_2_monthly_1 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
-    name_amount_1_monthly_2 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(2))
-    name_amount_2_monthly_2 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
-    name_amount_1_monthly_3 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(3))
-    name_amount_2_monthly_3 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
-    name_amount_1_monthly_4 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(4))
-    name_amount_2_monthly_4 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
+    label_amount_1_monthly_1 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(1))
+    label_amount_2_monthly_1 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
+    label_amount_1_monthly_2 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(2))
+    label_amount_2_monthly_2 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
+    label_amount_1_monthly_3 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(3))
+    label_amount_2_monthly_3 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
+    label_amount_1_monthly_4 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(4))
+    label_amount_2_monthly_4 = forms.CharField(label='Amount', max_length=10, widget=_amt_input(), required=False)
 
     wage_earner_title_1 = forms.CharField(label='Job title', max_length=100, required=False, widget=_long_text_input(1))
     wage_earner_age_1 = forms.CharField(label='Age', max_length=3, widget=_short_text_input(), required=False)
@@ -178,12 +178,12 @@ class PersonalInfoForm(forms.Form):
 
     cash = forms.CharField(label='a. Cash', max_length=10, required=False, widget=_amt_input())
 
-    name_amount_1_bank_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
-    name_amount_2_bank_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_bank_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
-    name_amount_2_bank_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_bank_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
-    name_amount_2_bank_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_bank_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
+    label_amount_2_bank_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_bank_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
+    label_amount_2_bank_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_bank_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
+    label_amount_2_bank_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
     asset_1_vehicle_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
     asset_2_vehicle_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
@@ -209,14 +209,14 @@ class PersonalInfoForm(forms.Form):
     asset_2_other_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
     asset_3_other_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
-    name_amount_1_payroll_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
-    name_amount_2_payroll_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_payroll_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
-    name_amount_2_payroll_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_payroll_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
-    name_amount_2_payroll_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_payroll_4 = forms.CharField(max_length=100, required=False, widget=_long_text_input(4))
-    name_amount_2_payroll_4 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_payroll_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
+    label_amount_2_payroll_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_payroll_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
+    label_amount_2_payroll_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_payroll_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
+    label_amount_2_payroll_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_payroll_4 = forms.CharField(max_length=100, required=False, widget=_long_text_input(4))
+    label_amount_2_payroll_4 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
     long_rent = forms.CharField(label='b. Rent or house payment & maintenance', max_length=10, required=False, widget=_amt_input())
     long_food_household = forms.CharField(label='c. Food and household supplies', max_length=10, required=False, widget=_amt_input())
@@ -230,22 +230,22 @@ class PersonalInfoForm(forms.Form):
     long_transportation = forms.CharField(label='k. Transportation, gas, auto repair and insurance', max_length=10,
         required=False, widget=_amt_input())
 
-    name_amount_1_installment_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
-    name_amount_2_installment_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_installment_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
-    name_amount_2_installment_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_installment_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
-    name_amount_2_installment_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_installment_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
+    label_amount_2_installment_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_installment_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
+    label_amount_2_installment_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_installment_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
+    label_amount_2_installment_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
     long_wages = forms.CharField(label='m. Wages/earnings withheld by court order', max_length=10,
         widget=_amt_input(), required=False)
 
-    name_amount_1_other_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
-    name_amount_2_other_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_other_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
-    name_amount_2_other_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
-    name_amount_1_other_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
-    name_amount_2_other_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_other_1 = forms.CharField(max_length=100, required=False, widget=_long_text_input(1))
+    label_amount_2_other_1 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_other_2 = forms.CharField(max_length=100, required=False, widget=_long_text_input(2))
+    label_amount_2_other_2 = forms.CharField(max_length=10, required=False, widget=_amt_input())
+    label_amount_1_other_3 = forms.CharField(max_length=100, required=False, widget=_long_text_input(3))
+    label_amount_2_other_3 = forms.CharField(max_length=10, required=False, widget=_amt_input())
 
     _WAIVER_PREFIX = 'waiver_'
     _BENEFIT_PREFIX = 'benefit_'
@@ -272,10 +272,10 @@ class PersonalInfoForm(forms.Form):
 
     def _get_financial_info(self):
         job_title = self.cleaned_data['job_title']
-        employer_name = self.cleaned_data['employer_name']
+        employer = self.cleaned_data['employer']
         address = models.Address(self.cleaned_data['employer_address'], self.cleaned_data['employer_city'],
             self.cleaned_data['employer_state'], self.cleaned_data['employer_zip_code'])
-        job = models.Job(job_title, employer_name, address)
+        job = models.Job(job_title, employer, address)
 
         monthly_income_sources = self._get_monthly_income_sources()
         other_household_wage_earners = self._get_other_household_wage_earners()
@@ -300,8 +300,8 @@ class PersonalInfoForm(forms.Form):
         payroll_deduction = []
         for i in xrange(1, 5):
             expense = models.Expense()
-            expense.recipient = self.cleaned_data['name_amount_1_payroll_%d' % i]
-            expense.amount = self.cleaned_data['name_amount_2_payroll_%d' % i]
+            expense.recipient = self.cleaned_data['label_amount_1_payroll_%d' % i]
+            expense.amount = self.cleaned_data['label_amount_2_payroll_%d' % i]
             payroll_deduction.append(expense)
 
         mdae.payroll_deduction = payroll_deduction
@@ -320,8 +320,8 @@ class PersonalInfoForm(forms.Form):
         installment_payments = []
         for i in xrange(1, 4):
             expense = models.Expense()
-            expense.recipient = self.cleaned_data['name_amount_1_installment_%d' % i]
-            expense.amount = self.cleaned_data['name_amount_2_installment_%d' % i]
+            expense.recipient = self.cleaned_data['label_amount_1_installment_%d' % i]
+            expense.amount = self.cleaned_data['label_amount_2_installment_%d' % i]
             installment_payments.append(expense)
         mdae.installment_payments = installment_payments
 
@@ -330,8 +330,8 @@ class PersonalInfoForm(forms.Form):
         other_monthly_expenses = []
         for i in xrange(1, 4):
             expense = models.Expense()
-            expense.recipient = self.cleaned_data['name_amount_1_other_%d' % i]
-            expense.amount = self.cleaned_data['name_amount_2_other_%d' % i]
+            expense.recipient = self.cleaned_data['label_amount_1_other_%d' % i]
+            expense.amount = self.cleaned_data['label_amount_2_other_%d' % i]
             other_monthly_expenses.append(expense)
         mdae.other_monthly_expenses = other_monthly_expenses
 
@@ -343,8 +343,8 @@ class PersonalInfoForm(forms.Form):
         bank_accounts = []
         for i in xrange(1, 4):
             bank_account = models.BankAccount()
-            bank_account.bank_name = self.cleaned_data['name_amount_1_bank_%d' % i]
-            bank_account.amount = self.cleaned_data['name_amount_2_bank_%d' % i]
+            bank_account.bank_name = self.cleaned_data['label_amount_1_bank_%d' % i]
+            bank_account.amount = self.cleaned_data['label_amount_2_bank_%d' % i]
             bank_accounts.append(bank_account)
 
         vehicles = []
@@ -386,8 +386,8 @@ class PersonalInfoForm(forms.Form):
         monthly_income_sources = []
         for i in xrange(1, 5):
             monthly_income_source = models.MonthlyIncomeSource()
-            monthly_income_source.job_title = self.cleaned_data['name_amount_1_monthly_%d' % i]
-            monthly_income_source.monthly_income = self.cleaned_data['name_amount_2_monthly_%d' % i]
+            monthly_income_source.job_title = self.cleaned_data['label_amount_1_monthly_%d' % i]
+            monthly_income_source.monthly_income = self.cleaned_data['label_amount_2_monthly_%d' % i]
             monthly_income_sources.append(monthly_income_source)
         return monthly_income_sources
 

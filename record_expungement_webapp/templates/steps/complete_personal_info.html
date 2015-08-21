@@ -198,8 +198,8 @@
       <div class="row-2 clearfix">
         <div class="col-left">Employer</div>
         <div class="col-right">
-          {{ info_form.employer_name }}
-          {% if info_form.employer_name.errors %}{% for error in info_form.employer_name.errors %}{{ error|escape }}{% endfor %}{% endif %}
+          {{ info_form.employer }}
+          {% if info_form.employer.errors %}{% for error in info_form.employer.errors %}{{ error|escape }}{% endfor %}{% endif %}
         </div>
       </div>
       <div class="row-2 clearfix">
@@ -224,7 +224,7 @@
         <h3>Why are you asking the court to waive your court fees?</h3>
         <p>I receive <i>(check all that apply; see form FW-001-INFO for definitions)</i>:</p>
 
-        {% elif "name_amount_1_monthly_1" == field.name %}
+        {% elif "label_amount_1_monthly_1" == field.name %}
           <h3>Your Gross Monthly Income</h3>
           <p class='description'>List the source and amount of any income you get each month, including: wages or other income from work before deductions, spousal/child support, retirement, social security, disability, unemployment, military basic allowance for quarters (BAQ), veterans payments, dividends, interest, trust income, annuities, net business or rental income, reimbursement for job-related expenses, gambling or lottery winnings, etc.</p>
           <div class="row-4 clearfix">
@@ -264,18 +264,18 @@
             <div class="col-4-small help-text">Fair Market Value</div>
             <div class="col-4 help-text">How Much You Still Owe</div>
           </div>
-        {% elif "name_amount_1_bank_1" == field.name %}
+        {% elif "label_amount_1_bank_1" == field.name %}
           <p class="subheading">b. All financial accounts (list bank name and amount)</p>
-        {% elif "name_amount_1_payroll_1" == field.name %}
+        {% elif "label_amount_1_payroll_1" == field.name %}
           <h3>Your Monthly Deductions and Expenses</h3>
           <p class="subheading">a. List any payroll deductions and the monthly amount below.</p>
-        {% elif "name_amount_1_installment_1" == field.name %}
+        {% elif "label_amount_1_installment_1" == field.name %}
           <p class="subheading">l. Installment payments</p>
           <div class="row-4 clearfix">
             <div class="col-4"><span class='subheading help-text'>Paid to:</span></div>
             <div class="col-4-small"><span class='subheading help-text'>How much?</span></div>
           </div>
-        {% elif "name_amount_1_other_1" == field.name %}
+        {% elif "label_amount_1_other_1" == field.name %}
           <p class="subheading">n. Any other monthly expenses (list each below)</p>
           <div class="row-4 clearfix">
             <div class="col-4"><span class='subheading help-text'>Paid to:</span></div>
@@ -316,9 +316,9 @@
           </div>
           {% endif %}
 
-        {% elif "name_amount_" in field.name %}
+        {% elif "label_amount_" in field.name %}
           {% if field.errors %}{% for error in field.errors %}{{ error|escape }}{% endfor %}{% endif %}
-          {% if "name_amount_1_" in field.name %}
+          {% if "label_amount_1_" in field.name %}
           <div class="row-4 clearfix">
             <div class="col-4">{{ field }}</div>
           {% else %}
