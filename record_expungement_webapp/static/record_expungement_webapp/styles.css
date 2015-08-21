@@ -4,186 +4,180 @@ textarea,
 select,
 button,
 .normal {
-    font-family: "Open Sans";
-    font-size: 13px;
-    color: #3d464d;
-    font-weight: normal;
+font-family: "Open Sans";
+font-size: 13px;
+color: #3d464d;
+font-weight: normal;
 }
-
 body {
-    background-color: #fff;
-    min-height: 100%;
-    margin: 2em 2.5em;
-    padding: 0;
-    line-height: 1.6em;
+background-color: #fff;
+min-height: 100%;
+margin: 2em 2.5em;
+padding: 0;
+line-height: 1.6em;
 }
-
 a, a * {
-    cursor: pointer;
-    outline: none;
+cursor: pointer;
+outline: none;
 }
-
 a {
-    text-decoration: none;
-    img {
-	border: 0;
-    }
+text-decoration: none;
+img {
+border: 0;
 }
-
+}
 p, h1, h2, h3, h4, h5 {
-    margin: 0 0 1em 0;
+margin: 0 0 1em 0;
 }
-
 h1 {
-    font-size: 18pt;
-    font-weight: normal;
-    margin: 10px 0;
+font-size: 18pt;
+font-weight: normal;
+margin: 10px 0;
 }
 
 h2 {
-    padding-bottom: 10px;
-    font-size: 18pt;
-    font-weight: normal;
-    margin: 10px 0;
+padding-bottom: 10px;
+font-size: 18pt;
+font-weight: normal;
+margin: 10px 0;
 }
-/*
-h3 {
-    padding-bottom: 8px;
-    margin: 0;
-    font-size: 12pt;
-}*/
-
 h3, h4 {
-    margin: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    font-weight: bold;
-    font-size: 11pt;
+margin: 0;
+padding-top: 5px;
+padding-bottom: 5px;
+font-weight: bold;
+font-size: 11pt;
 }
-
 button {
-  border: 0;
-  width: auto;
-  overflow: visible;
-  border-style: solid;
-  outline: 0;
+border: 0;
+width: auto;
+overflow: visible;
+border-style: solid;
+outline: 0;
 }
-
 form {
-  padding: 0;
-  margin: 0;
+padding: 0;
+margin: 0;
 }
 .spacer {
-    padding: 1em;
+padding: 1em;
 }
 .description {
-    font-style: italic;
+font-style: italic;
 }
 .inner {
-    padding-left: 2.5em;
-    padding-right: 2.5em;
+padding-left: 2.5em;
+padding-right: 2.5em;
 }
 .inner-section {
-    padding-top: 1.2em;
+padding-top: 1.2em;
 }
 .top-level-section {
-    margin: 2em 0em;
+margin: 2em 0em;
 }
 .waiver-box {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+padding-top: 0.5em;
+padding-bottom: 0.5em;
 }
 .declaration-box {
-    font-size: 11pt;
-    color: #ed7a6f;
-    padding-top: 1em;
-    padding-bottom: 0.5em;
+color: #ed7a6f;
+line-height: 1.8em;
+}
+.eligible-yes {
+color: #3a8a54;
+line-height: 1.8em;
+}
+.eligible-no {
+color: #ed7a6f;
+line-height: 1.8em;
 }
 .gray {
-    background-color: #eee;
-    padding: 1.5em 1em 2em 1em;
-    border-radius: 3px;
+background-color: #eee;
+padding: 1.5em 1em 2em 1em;
+border-radius: 3px;
 }
 input[type=submit] {
-    font-size: 2em;
+font-size: 2em;
 }
 .button-left {
-    float: left;
-    margin-right: 20px;
+float: left;
+margin-right: 20px;
 }
-
+.count-num {
+line-height: 1.8em;
+}
 *,
 *:before,
 *:after {
-    box-sizing: border-box;
+box-sizing: border-box;
 }
 .clearfix:after {
-    content: "";
-    display: table;
-    clear: both;
+content: "";
+display: table;
+clear: both;
 }
 [class*="row-"] {
-    margin-bottom: 10px;
+margin-bottom: 10px;
 }
 [class*="row-"]:last-child {
-    margin-bottom: 0;
+margin-bottom: 0;
 }
 [class*="col-"] {
 }
 [class*="col-"] {
-    margin-right: 20px;
+margin-right: 20px;
 }
 [class*="col-"]:last-child {
-    margin-right: 0;
+margin-right: 0;
 }
 .separator {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-    height: 1px;
-    border-bottom: 1px solid #ccc;
+margin-top: 1.5em;
+margin-bottom: 1.5em;
+height: 1px;
+border-bottom: 1px solid #ccc;
 }
 .help-text {
-    font-size: 8pt;
+font-size: 8pt;
 }
 .col-left {
-    float: left;
-    width: 8%;
-    white-space: nowrap;
+float: left;
+width: 8%;
+white-space: nowrap;
 }
 .col-right {
-    float: left;
-    width: 92%;
+float: left;
+width: 92%;
 }
 .col-num {
-    float: left;
-    width: 2%;
+float: left;
+width: 2%;
 }
 .col-both {
-    width: 100%;
+width: 100%;
 }
 .row-2 {
-    padding-left: 20px;
+padding-left: 20px;
 }
 .row-2 [class*="col-"]:first-child {
-    margin-left: -20px;
+margin-left: -20px;
 }
 .col-middle {
-    float: left;
-    width: 35%;
+float: left;
+width: 35%;
 }
 .col-4 {
-    float: left;
-    width: 25%;
+float: left;
+width: 25%;
 }
 .col-4-small {
-    float: left;
-    width: 12%;
+float: left;
+width: 12%;
 }
 .row-4 {
-    padding-left: 60px;
+padding-left: 60px;
 }
 .row-4 [class*="col-"]:first-child {
-    margin-left: -60px;
+margin-left: -60px;
 }
 
 

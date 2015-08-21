@@ -48,13 +48,16 @@
         {% endif %}
 
         <h3>Arrest ID {{ event.arrest_info.arrest_id }}</h3>
-        {% if event.needs_declaration %}
+        {% if event.needs_declaration and event.has_any_eligible %}
           <div class="row-2 clearfix declaration-box">
             <div class="col-both">
-              This event needs a declaration. Reasons:
-              {% for reason in event.needs_declaration_reasons %}
-                {{ reason }}
-              {% endfor %}
+              This event needs a declaration.
+              <div>
+                Reason(s):
+                {% for reason in event.needs_declaration_reasons %}
+                  {{ reason }}
+                {% endfor %}
+              </div>
             </div>
           </div>
         {% endif %}
@@ -93,18 +96,22 @@
               <h3>Counts</h3>
               {% for count in case_info.counts %}
                 <div class="row-2 clearfix">
-                  <div class="col-num">{{ forloop.counter }}</div>
+                  <div class="col-num count-num">{{ forloop.counter }}</div>
                   <div class="col-right">
                     <div class="row-2 clearfix">
                       <div class="col-both">
-                        Eligible for expungement?
                         {% if count.is_eligible_for_expungement %}
-                          Yes
+                          <div class='eligible-yes'>Eligible for expungement? Yes</div>
                         {% else %}
-                          No
-                            {% for reason in count.ineligible_for_expungement_reasons %}
-                                <div>{{ reason }}</div>
-                            {% endfor %}
+                          <div class='eligible-no'>
+                          Eligible for expungement? No
+                            <div>
+                              Reason(s):
+                              {% for reason in count.ineligible_for_expungement_reasons %}
+                                {{ reason }}
+                              {% endfor %}
+                            </div>
+                          </div>
                         {% endif %}
                       </div>
                     </div>
