@@ -42,7 +42,7 @@ h1 {
 }
 
 h2 {
-    padding-top: 3px;
+    padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 4px;
     font-size: 14pt;
@@ -50,7 +50,7 @@ h2 {
 }
 
 h3 {
-    padding-top: 3px;
+    padding-top: 5px;
     padding-bottom: 5px;
     margin: 0;
     font-size: 12pt;
@@ -59,6 +59,7 @@ h3 {
 
 h4 {
     margin: 0;
+    padding-top: 5px;
     padding-bottom: 5px;
     font-weight: bold;
 }
@@ -76,8 +77,8 @@ form {
   margin: 0;
 }
 
-.errorlist {
-    display: inline;
+.description {
+    font-style: italic;
 }
 .indent-1 {
     padding: 0 2em;
@@ -95,6 +96,9 @@ form {
 }
 .top-level-section {
     margin: 2em 0em;
+}
+.subheading {
+    color: #666;
 }
 .gray {
     background-color: #eee;
@@ -133,23 +137,19 @@ input[type=submit] {
 [class*="col-"]:last-child {
     margin-right: 0;
 }
+.help-text {
+    font-size: 8pt;
+    color: #000;
+}
 .col-left {
     float: left;
     width: 8%;
     color: #666;
+    white-space: nowrap;
 }
 .col-right {
     float: left;
     width: 92%;
-}
-.col-left-large {
-    float: left;
-    width: 18%;
-    color: #666;
-}
-.col-right-small {
-    float: left;
-    width: 82%;
 }
 .col-num {
     float: left;
@@ -167,11 +167,11 @@ input[type=submit] {
 
 .col-4 {
     float: left;
-    width: 15%;
+    width: 25%;
 }
 .col-4-small {
     float: left;
-    width: 5%;
+    width: 12%;
 }
 .row-4 {
     padding-left: 60px;
