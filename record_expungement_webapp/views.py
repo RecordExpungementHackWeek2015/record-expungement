@@ -283,7 +283,9 @@ class PersonalInfoForm(forms.Form):
         monthly_deductions_and_expenses = self._get_monthly_deductions_and_expenses()
 
         financial_info = models.FinancialInfo(job=job, monthly_income_sources=monthly_income_sources,
-            money_and_property=money_and_property, monthly_deductions_and_expenses=monthly_deductions_and_expenses)
+                                              other_household_wage_earners=other_household_wage_earners,
+                                              money_and_property=money_and_property,
+                                              monthly_deductions_and_expenses=monthly_deductions_and_expenses)
 
         financial_info.benefits_received_from_state = self._get_benefits()
         financial_info.family_size = self.cleaned_data['family_size']
@@ -464,31 +466,31 @@ def success(request):
 def _generate_forms(request):
     personal_history = pickle.loads(request.session['personal_history'])
 
-    DIR_FOR_ALL_SESSIONS = "outputs"
-    SUBFOLDER_FOR_THIS_SESSION = "session_" + request.session.session_key
-    FORMS_FOLDER = "static/forms"
-    WEBAPP_PATH = os.path.abspath(record_expungement_webapp.__path__[0])
-    PACKET_BASE_FOLDER = os.path.join(WEBAPP_PATH, DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION)
+    webapp_path = os.path.abspath(record_expungement_webapp.__path__[0])
+    forms_dir_path = os.path.join(webapp_path, "static/forms")
+    packet_base_folder = os.path.join(webapp_path, "outputs", "session_" + request.session.session_key)
 
-    if os.path.exists(SUBFOLDER_FOR_THIS_SESSION):
-        shutil.rmtree(SUBFOLDER_FOR_THIS_SESSION)
+    if os.path.exists(packet_base_folder):
+        shutil.rmtree(packet_base_folder)
 
     for i, event in enumerate(personal_history.rap_sheet.events):
-        EVENT_SUBFOLDER = FormUtil.date_to_str(event.arrest_info.date) + "_arrest"
         if event.has_eligible_convictions():
-            packet_output_folder = os.path.join(WEBAPP_PATH, DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION,
-                                                str(EVENT_SUBFOLDER))
-            resources_directory = os.path.join(WEBAPP_PATH, FORMS_FOLDER)
-            PacketFactory.generate(personal_history, event, packet_output_folder, resources_directory)
+            event_subfolder = FormUtil.date_to_str(event.arrest_info.date) + "_arrest"
+            packet_output_folder = os.path.join(packet_base_folder, str(event_subfolder))
+            PacketFactory.generate(personal_history, event, packet_output_folder, forms_dir_path)
+    return packet_base_folder
 
-    file_name = "expungement_forms_packet"
-    zip_path = "/tmp/" + file_name
-    path_to_zip = shutil.make_archive(zip_path, "zip", PACKET_BASE_FOLDER)
+
+def _zip_forms_into_response(request, packet_base_folder):
+    zip_file_name = "expungement_forms_packet"
+    temp_output_dir = "/tmp/" + zip_file_name
+    path_to_zip = shutil.make_archive(temp_output_dir, "zip", packet_base_folder)
     response = HttpResponse(FileWrapper(file(path_to_zip, 'rb')), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename=' + file_name.replace(" ", "_") + '.zip'
+    response['Content-Disposition'] = 'attachment; filename=' + zip_file_name.replace(" ", "_") + '.zip'
     return response
 
 
 def download_forms(request):
-    return _generate_forms(request)
+    packet_base_folder = _generate_forms(request)
+    return _zip_forms_into_response(request, packet_base_folder)
 

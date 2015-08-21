@@ -3,6 +3,7 @@ from form_util import FormUtil, FormModel
 
 class CR181Model(FormModel):
     def __init__(self):
+        FormModel.__init__(self)
         raise ValueError("Don't construct me")
 
     @staticmethod

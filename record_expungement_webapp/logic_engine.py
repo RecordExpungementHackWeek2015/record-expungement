@@ -3,11 +3,11 @@ from special_case_offenses import WobblerOffensesModel, IneligibleOffensesModel
 from county_court_info import SanMateoCountyCourt
 from models import PersonalHistory, IneligibilityReason, DispositionDecision, CrimeCategory, NeedsDeclarationReason, \
     IncarcerationType, Count, CaseInfo
-from cr180_factory import CR180Model
-from cr181_factory import CR181Model
-from fw001_factory import FW001Model
-from fw003_factory import FW003Model
-from pos040_factory import POS040Model
+from cr180_model import CR180Model
+from cr181_model import CR181Model
+from fw001_model import FW001Model
+from fw003_model import FW003Model
+from pos040_model import POS040Model
 
 
 class ExpungementLogicEngine:

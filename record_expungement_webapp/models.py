@@ -3,7 +3,7 @@ import datetime
 
 
 class Name:
-    def __init__(self, first=None, middle=None, last=None):
+    def __init__(self, last, first, middle=None):
         """
         :type last: str
         :type middle: str
@@ -34,13 +34,20 @@ class Address:
         return self._to_str("\n")
 
     def to_str_one_line(self):
-        return self._to_str("")
+# <<<<<<< HEAD
+#         return self._to_str("")
+# =======
+        return self._to_str(", ")
+# >>>>>>> TEMP COMMIT
 
     def _to_str(self, line_delimiter):
         """
         :type line_delimiter: str
         """
         return self.address + line_delimiter + self.city + ", " + self.state + " " + self.zip_code
+
+    def __str__(self):
+        return self.to_str_one_line()
 
 
 class Job:

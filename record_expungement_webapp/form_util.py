@@ -105,16 +105,6 @@ class FormUtil:
 
             assert filled
 
-        # CHeck that all fields have been filled second time around - can delete this later
-        for (label, value) in field_list:
-            print "CHECKING FILLED " + label
-            filled = False
-            for field in json_list:
-                if field["name"] == label:
-                    filled = True
-
-            assert filled
-
         return json_list
 
 

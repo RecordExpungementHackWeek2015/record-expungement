@@ -6,6 +6,7 @@ from county_court_info import SanMateoCountyCourt
 # Need to fill out the top box plus 2, 4, 5a&b, 6a for the San Mateo County POSes
 class POS040Model(FormModel):
     def __init__(self):
+        FormModel.__init__(self)
         raise ValueError("Don't construct me")
 
     @staticmethod

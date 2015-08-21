@@ -1,11 +1,11 @@
 from models import PersonalHistory, StateBenefit, FinancialInfo
 from county_court_info import SanMateoCountyCourt
 from form_util import FormUtil, FormModel
-import pprint
 
 
 class FW001Model(FormModel):
     def __init__(self):
+        FormModel.__init__(self)
         raise ValueError("Don't construct me")
 
     @staticmethod
@@ -24,7 +24,7 @@ class FW001Model(FormModel):
         return key[benefit]
 
     @staticmethod
-    def _benefits_checks(fi):
+    def _waiver_needed_reasons(fi):
         """
         :type fi: FinancialInfo
         """
@@ -32,6 +32,29 @@ class FW001Model(FormModel):
                   for benefit in fi.benefits_received_from_state]
         if checks:
             checks.append(("5a", True))  # Check the first box
+
+        family_size_to_threshold = [0,
+                                    1226.05,
+                                    1659.38,
+                                    2092.71,
+                                    2526.05,
+                                    2959.38,
+                                    3392.71]
+
+        family_size = int(fi.family_size)
+        family_income = float(fi.total_family_income)
+        last_threshold = family_size_to_threshold[-1]
+        last_size = len(family_size_to_threshold) - 1
+        threshold = family_size_to_threshold[family_size] if last_size >= family_size \
+            else last_threshold + 433.34 * (family_size - last_size)
+
+        if family_income < threshold:
+            checks.append(("5b", True))
+
+        if not checks:
+            checks.append(("5c", True))  # Check the first box
+            checks.append(("5c1", True))  # Check the first box
+
         return checks
 
     @staticmethod
@@ -118,6 +141,8 @@ class FW001Model(FormModel):
         for i, expense in enumerate(md.other_monthly_expenses):
             descriptions.append(("11n%(i)sa" % {'i': i+1}, expense.recipient))
             dollar_amounts.append(("11n%(i)sb" % {'i': i+1}, expense.amount))
+        other_expenses_total = sum([int(expense.amount) for expense in md.other_monthly_expenses])
+        # dollar_amounts.append(("11n", other_expenses_total))
 
         total = sum(int(amount) for (label, amount) in dollar_amounts if amount)
         return descriptions + dollar_amounts + [("11_total", total)]
@@ -150,7 +175,7 @@ class FW001Model(FormModel):
             ("3a", "N/A"),  # Lawyer, if person has one
             ("4a", True),  # Check 4a but not 4b
         ]
-        fields. extend(FW001Model._benefits_checks(fi))
+        fields.extend(FW001Model._waiver_needed_reasons(fi))
         fields.extend(
             [("6a", True)]
             if fi.event_index_to_whether_fees_have_been_waived_recently[ph.rap_sheet.events.index(event)] else []

@@ -31,4 +31,6 @@ class FW003Model(FormModel):
             ("3", SanMateoCountyCourt.mailing_address_multiline_str()),
             ("4", event.associated_cases[0].case_id),
             ("5", FormUtil.short_case_name(ph, event)),
+            ("6", str(ph.name)),
+            ("7", event.associated_cases[0].case_id),
         ]

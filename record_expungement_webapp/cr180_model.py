@@ -5,7 +5,7 @@ import datetime
 
 class CR180Model(FormModel):
     def __init__(self):
-        super(CR180Model, self).__init__()
+        FormModel.__init__(self)
         raise ValueError("Don't construct me")
 
     @staticmethod
@@ -22,7 +22,7 @@ class CR180Model(FormModel):
                                  ("4b%(i)sb" % {'i': i+1}, count.offense.code),
                                  ("4b%(i)sc" % {'i': i+1}, count.offense.offense_id),
                                  ("4b%(i)sd" % {'i': i+1}, count.disposition.crime_category),
-                                 ("4b%(i)se" % {'i': i+1}, count.offense.eligible_for_reduction)])
+                                 ("4b%(i)se" % {'i': i+1}, "YES" if count.offense.eligible_for_reduction else "NO")])
 
         return table_fields
 
