@@ -27,7 +27,7 @@ class FW003Model(FormModel):
             ("1c", ph.address.city),
             ("1d", ph.address.state),
             ("1e", ph.address.zip_code),
-            #("2", "N/A"),  # Lawyer, if person has one
+            ("2", "N/A"),  # Lawyer, if person has one
             ("3", SanMateoCountyCourt.mailing_address_multiline_str()),
             ("4", event.associated_cases[0].case_id),
             ("5", FormUtil.short_case_name(ph, event)),

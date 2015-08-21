@@ -32,11 +32,7 @@ class FormUtil:
         :type ph: PersonalHistory
         :type event: Event
         """
-        pprint.pprint(ph.rap_sheet.names_as_charged)
-        pprint.pprint("INDEX: " + str(event.arrest_info.name_as_charged_id))
-        name = ph.rap_sheet.names_as_charged[event.arrest_info.name_as_charged_id]
-        print str(name)
-        return name
+        return ph.rap_sheet.names_as_charged[event.arrest_info.name_as_charged_id]
 
     @staticmethod
     def attorney_or_party_without_attorney(ph, event):
@@ -98,7 +94,6 @@ class FormUtil:
         """
         :type field_list: list[tuple[str, str]]
         """
-        pprint.pprint(field_list)
 
         for (label, value) in field_list:
             print "filling " + label
@@ -109,8 +104,6 @@ class FormUtil:
                     field["value"] = value
 
             assert filled
-
-        #pprint.pprint(json_list)
 
         # CHeck that all fields have been filled second time around - can delete this later
         for (label, value) in field_list:

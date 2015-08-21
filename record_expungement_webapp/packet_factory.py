@@ -36,7 +36,6 @@ class PacketFactory:
         """
         :type form_model: FormModel
         """
-        print "***** GENERATING FORMS FOR " + form_model.get_name()
         fields_list = form_model.get_fields(ph, event)
         form_filler = FormFiller(form_model.get_name(), resources_directory)
         json_list = form_filler.get_fields()

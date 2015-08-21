@@ -25,9 +25,9 @@ class POS040Model(FormModel):
         return [
             ("1a", FormUtil.attorney_or_party_without_attorney(ph, event)),
             ("1b", str(ph.address)),
-            # ("1c", ph.phone_number),
-            # ("1d", ph.email),
-            # ("1e", "Self-Represented"),
+            ("1c", ph.phone_number),
+            ("1d", ph.email),
+            ("1e", "Self-Represented"),
             ("2a", SanMateoCountyCourt.county_name()),
             ("2b", SanMateoCountyCourt.mailing_address().address),
             ("2d", SanMateoCountyCourt.mailing_address().city + " " + SanMateoCountyCourt.mailing_address().zip_code),

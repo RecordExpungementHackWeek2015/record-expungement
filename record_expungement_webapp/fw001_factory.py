@@ -39,7 +39,6 @@ class FW001Model(FormModel):
         """
         :type fi: FinancialInfo
         """
-        pprint.pprint(fi.monthly_income_sources)
         monthly_personal_income_total = sum([int(source.monthly_income) for source in fi.monthly_income_sources if source.monthly_income])
         household_income_total = sum([int(source.gross_monthly_income) for source in fi.other_household_wage_earners if source.gross_monthly_income])
         total = monthly_personal_income_total + household_income_total
