@@ -19,6 +19,7 @@ tokens = (
 'WORD',
 'CNT_LABEL',
 'CRIME_CATEGORY',
+'CRIME_NUMBER',
 'HEIGHT',
 'WEIGHT',
 'EYE_COLOR',
@@ -48,6 +49,7 @@ t_WEIGHT = r'[ ]WGT[\/]\d+'
 t_EYE_COLOR = r'[ ]EYE[\/]\w+'
 t_CRIME_CATEGORY = r'[A-Z][A-Z][-]'
 t_AGENCY_ID = r'CASO|CAPD|CASC|CACB|CAMC'
+t_CRIME_NUMBER = r'\d+\(A*'
 t_WORD = r'[A-Z_][A-Z]*' # text can't start with a number, must be all caps
 t_MISTAKE = r'[a-z][A-Za-z0-9,_]*'
 
