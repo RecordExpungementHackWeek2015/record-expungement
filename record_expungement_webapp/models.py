@@ -220,7 +220,7 @@ class Event:
         :type arrest_info: ArrestInfo
         :type listed_dob: datetime.date
         :type associated_cases: list[CaseInfo]
-        :type probation_modifications: list
+        :type probation_modifications: list[ProbationModification]
         """
         self.arrest_info = arrest_info
         self.listed_dob = listed_dob
@@ -233,6 +233,13 @@ class Event:
     # Display star next to event. List out reasons.
     def needs_declaration(self):
         return bool(self.needs_declaration_reasons)
+
+    def completed_probation(self):
+        return NeedsDeclarationReason.PROBATION_VIOLATED in self.needs_declaration_reasons
+
+    # TODO: ACTUALLY IMPLEMENT THIS
+    def probation_terminated_early(self):
+        return False and self
 
     def get_convictions_of_type(self, crime_category):
         """
@@ -250,6 +257,9 @@ class Event:
     def get_eligible_convictions_of_type(self, crime_category):
         return [count for count in self.get_convictions_of_type(crime_category)
                 if not count.ineligible_for_expungement_reasons]
+
+    def has_eligible_convictions(self):
+        return [count for count in self.associated_cases[0].counts if not count.ineligible_for_expungement_reasons]
 
 
 class RAPSheet:
@@ -420,7 +430,7 @@ class FinancialInfo:
         self.monthly_deductions_and_expenses = monthly_deductions_and_expenses  # MonthlyDeductionsAndExpenses
 
     def is_monthly_income_below_threshold(self):
-        return False # something with family_size and total_family_income
+        return False and self  # something with family_size and total_family_income
 
 
 class PersonalHistory:

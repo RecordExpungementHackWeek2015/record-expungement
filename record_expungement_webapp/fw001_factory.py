@@ -1,9 +1,9 @@
 from models import PersonalHistory, StateBenefit, FinancialInfo
 from county_court_info import SanMateoCountyCourt
-from form_util import FormUtil
+from form_util import FormUtil, FormModel
 
 
-class FW001Factory:
+class FW001Model(FormModel):
     def __init__(self):
         raise ValueError("Don't construct me")
 
@@ -27,7 +27,7 @@ class FW001Factory:
         """
         :type fi: FinancialInfo
         """
-        checks = [(FW001Factory._benefit_to_checkbox_name(benefit), True)
+        checks = [(FW001Model._benefit_to_checkbox_name(benefit), True)
                   for benefit in fi.benefits_received_from_state]
         if checks:
             checks.append(("5a", True))  # Check the first box
@@ -119,7 +119,15 @@ class FW001Factory:
         return descriptions + dollar_amounts + [("11_total", total)]
 
     @staticmethod
-    def generate(ph, event):
+    def get_name():
+        return "cr_180"
+
+    @staticmethod
+    def get_output_file_name():
+        return "cr_180.pdf"
+
+    @staticmethod
+    def get_fields(ph, event):
         """
         :type ph: PersonalHistory
         :type event: Event
@@ -138,18 +146,18 @@ class FW001Factory:
             ("3", "N/A"),  # Lawyer, if person has one
             ("4a", True),  # Check 4a but not 4b
         ].extend(
-            FW001Factory._benefits_checks(fi)
+            FW001Model._benefits_checks(fi)
         ).extend(
             [("6a", True)]
             if fi.event_index_to_whether_fees_have_been_waived_recently(ph.rap_sheet.events.index(event)) else []
         ).extend(
             [("7", True)] if fi.income_changes_significantly_month_to_month else []
         ).extend(
-            FW001Factory._monthly_and_household_income(fi)
+            FW001Model._monthly_and_household_income(fi)
         ).extend(
-            FW001Factory._money_and_property(fi)
+            FW001Model._money_and_property(fi)
         ).extend(
-            FW001Factory._monthly_deductions_and_expenses(fi)
+            FW001Model._monthly_deductions_and_expenses(fi)
         ).extend([
             ("12", SanMateoCountyCourt.mailing_address_multiline_str()),
             ("13", event.associated_cases[0].case_id),

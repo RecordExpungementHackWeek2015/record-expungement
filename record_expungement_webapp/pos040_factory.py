@@ -1,15 +1,23 @@
-from form_util import FormUtil
+from form_util import FormUtil, FormModel
 from models import PersonalHistory, Event
 from county_court_info import SanMateoCountyCourt
 
 
 # Need to fill out the top box plus 2, 4, 5a&b, 6a for the San Mateo County POSes
-class POS040Factory:
+class POS040Model(FormModel):
     def __init__(self):
         raise ValueError("Don't construct me")
 
     @staticmethod
-    def generate(ph, event):
+    def get_name():
+        return "cr_180"
+
+    @staticmethod
+    def get_output_file_name():
+        return "cr_180.pdf"
+
+    @staticmethod
+    def get_fields(ph, event):
         """
         :type ph: PersonalHistory
         :type event: Event

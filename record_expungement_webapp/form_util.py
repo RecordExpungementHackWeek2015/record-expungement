@@ -81,3 +81,49 @@ class FormUtil:
     @staticmethod
     def case_date(event):
         return FormUtil.date_to_str(event.associated_cases[0].date)
+
+    @staticmethod
+    def fill_field_json_with_field_list(json_list, field_list):
+        """
+        :type field_list: list[tuple[str, str]]
+        """
+
+        for (label, value) in field_list:
+            print "filling " + label
+            filled = False
+            for field in json_list:
+                if field["name"] == label:
+                    filled = True
+                    field["name"] = value
+
+            assert filled
+
+        # CHeck that all fields have been filled second time around - can delete this later
+        for (label, value) in field_list:
+            print "filling " + label
+            filled = False
+            for field in json_list:
+                if field["name"] == label:
+                    filled = True
+
+            assert filled
+
+        return json_list
+
+
+# Interface for each of the form models
+class FormModel:
+    def __init__(self):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_fields(ph, event):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_name():
+        raise NotImplementedError
+
+    @staticmethod
+    def get_output_file_name():
+        raise NotImplementedError
