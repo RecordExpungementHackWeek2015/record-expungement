@@ -3,7 +3,7 @@ import datetime
 
 
 class Name:
-    def __init__(self, first=None, middle=None, last=None):
+    def __init__(self, last=None, first=None, middle=None):
         """
         :type last: str
         :type middle: str
@@ -34,7 +34,7 @@ class Address:
         return self._to_str("\n")
 
     def to_str_one_line(self):
-        return self._to_str("")
+        return self._to_str(" ")
 
     def _to_str(self, line_delimiter):
         """
@@ -259,7 +259,8 @@ class Event:
                 if not count.ineligible_for_expungement_reasons]
 
     def has_eligible_convictions(self):
-        return [count for count in self.associated_cases[0].counts if not count.ineligible_for_expungement_reasons]
+        return self.associated_cases and [count for count in self.associated_cases[0].counts
+                                          if not count.ineligible_for_expungement_reasons]
 
 
 class RAPSheet:
@@ -302,7 +303,11 @@ class StateBenefit:
 
 
 class MonthlyIncomeSource:
-    def __init__(self):
+    def __init__(self, job_title=None, monthly_income=None):
+        """
+        :type job_title: str
+        :type monthly_income: int
+        """
         self.job_title = None
         self.monthly_income = None
 
@@ -352,11 +357,14 @@ class PersonalProperty:
 
 
 class MoneyAndProperty:
-    def __init__(self):
+    def __init__(self, real_estate=None):
+        """
+        :type real_estate: list[RealEstate]
+        """
         self.total_cash = None  # int (dollars)
         self.bank_accounts = []  # BankAccount
         self.vehicles = []  # List VehicleInfo
-        self.real_estate = []  # List RealEstate
+        self.real_estate = real_estate  # List RealEstate
         self.other_property = []  # List Property
 
 

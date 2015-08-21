@@ -7,6 +7,7 @@ from fw003_factory import FW003Model
 
 from form_util import FormUtil, FormModel
 from form_filler import FormFiller
+import shutil
 
 
 class PacketFactory:
@@ -19,6 +20,11 @@ class PacketFactory:
         :type ph: PersonalHistory
         :type event: Event
         """
+
+        if os.path.exists(packet_output_folder):
+            shutil.rmtree(packet_output_folder)
+        os.makedirs(packet_output_folder)
+
         PacketFactory.generate_form(CR180Model, ph, event, packet_output_folder, resources_directory)
         PacketFactory.generate_form(CR181Model, ph, event, packet_output_folder, resources_directory)
         PacketFactory.generate_form(POS040Model, ph, event, packet_output_folder, resources_directory)
@@ -30,6 +36,7 @@ class PacketFactory:
         """
         :type form_model: FormModel
         """
+        print "***** GENERATING FORMS FOR " + form_model.get_name()
         fields_list = form_model.get_fields(ph, event)
         form_filler = FormFiller(form_model.get_name(), resources_directory)
         json_list = form_filler.get_fields()

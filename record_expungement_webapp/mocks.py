@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from record_expungement_webapp import models
+from models import Name
 
 
 ARREST_INFO_0 = models.ArrestInfo(
@@ -130,17 +131,17 @@ EVENT_2 = models.Event(
 
 RAP_SHEET_1 = models.RAPSheet(
     names_as_charged=[
-        'ALEXANDER, ROBIN RAE',
-        'MOAN, ROBIN RAE',
-        'LEDEL, ROBIN RAE',
-        'LEDEL, ROBIN',
-        'SUMMERS, KARLA',
-        'LEDEL, RUBIN RAE',
-        'SUMMERS, CARTA',
-        'TYREE, ROBIN',
-        'TYREE, ROBIN RAE',
-        'ALEXANDER, ROBIN',
-        'TYREE, ROBIN R'
+        Name('ALEXANDER', 'ROBIN RAE'),
+        Name('MOAN', 'ROBIN', 'RAE'),
+        Name('LEDEL', 'ROBIN', 'RAE'),
+        Name('LEDEL', 'ROBIN'),
+        Name('SUMMERS', 'KARLA'),
+        Name('LEDEL', 'RUBIN', 'RAE'),
+        Name('SUMMERS', 'CARTA'),
+        Name('TYREE', 'ROBIN'),
+        Name('TYREE', 'ROBIN', 'RAE'),
+        Name('ALEXANDER', 'ROBIN'),
+        Name('TYREE', 'ROBIN', 'R')
     ],
     dob=datetime(1953, 4, 20, 0, 0),
     sex='F',

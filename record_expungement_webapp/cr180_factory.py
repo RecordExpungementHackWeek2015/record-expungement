@@ -18,11 +18,11 @@ class CR180Model(FormModel):
         table_fields = []
 
         for i, count in enumerate(event.associated_cases[0].counts):
-            table_fields.extend([("4b%(i)sa" % {'i': i}, count.offense.description),
-                                 ("4b%(i)sb" % {'i': i}, count.offense.code),
-                                 ("4b%(i)sc" % {'i': i}, count.offense.offense_id),
-                                 ("4b%(i)sd" % {'i': i}, count.disposition.crime_category),
-                                 ("4b%(i)se" % {'i': i}, count.offense.eligible_for_reduction)])
+            table_fields.extend([("4b%(i)sa" % {'i': i+1}, count.offense.description),
+                                 ("4b%(i)sb" % {'i': i+1}, count.offense.code),
+                                 ("4b%(i)sc" % {'i': i+1}, count.offense.offense_id),
+                                 ("4b%(i)sd" % {'i': i+1}, count.disposition.crime_category),
+                                 ("4b%(i)se" % {'i': i+1}, count.offense.eligible_for_reduction)])
 
         return table_fields
 
@@ -97,11 +97,11 @@ class CR180Model(FormModel):
 
     @staticmethod
     def get_name():
-        return "cr_180"
+        return "cr180"
 
     @staticmethod
     def get_output_file_name():
-        return "cr_180.pdf"
+        return "cr180.pdf"
 
     @staticmethod
     def get_fields(ph, event):

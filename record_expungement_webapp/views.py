@@ -1,4 +1,3 @@
-import cStringIO
 import pickle
 import os
 from django import forms
@@ -7,11 +6,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 from django.template import RequestContext
+from django.core.servers.basehttp import FileWrapper
 
-from record_expungement_webapp import mocks
-from record_expungement_webapp import models
+import shutil
+import record_expungement_webapp
+from record_expungement_webapp import mocks, models
 from logic_engine import ExpungementLogicEngine
 from packet_factory import PacketFactory
+from form_util import FormUtil
 
 
 # File upload form.
@@ -249,7 +251,7 @@ class PersonalInfoForm(forms.Form):
             self.fields[field_name] = forms.BooleanField(label=field_name, required=False)
 
     def _create_personal_history(self, rap_sheet):
-        name = models.Name(self.cleaned_data['fname'], self.cleaned_data['mname'], self.cleaned_data['lname'])
+        name = models.Name(first=self.cleaned_data['fname'], middle=self.cleaned_data['mname'], last=self.cleaned_data['lname'])
         address = models.Address(self.cleaned_data['address'], self.cleaned_data['city'], self.cleaned_data['state'],
             self.cleaned_data['zip_code'])
         email = self.cleaned_data['email']
@@ -457,24 +459,28 @@ def _generate_forms(request):
     DIR_FOR_ALL_SESSIONS = "outputs"
     SUBFOLDER_FOR_THIS_SESSION = "session_" + request.session.session_key
     FORMS_FOLDER = "static/forms"
+    WEBAPP_PATH = os.path.abspath(record_expungement_webapp.__path__[0])
+    PACKET_BASE_FOLDER = os.path.join(WEBAPP_PATH, DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION)
+
+    if os.path.exists(SUBFOLDER_FOR_THIS_SESSION):
+        shutil.rmtree(SUBFOLDER_FOR_THIS_SESSION)
+
     for i, event in enumerate(personal_history.rap_sheet.events):
-        EVENT_SUBFOLDER = i
+        EVENT_SUBFOLDER = FormUtil.date_to_str(event.arrest_info.date) + "_arrest"
         if event.has_eligible_convictions():
-            packet_output_folder = os.path.join(os.getcwd(), DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION, i)
-            resources_directory = os.path.join(os.getcwd(), FORMS_FOLDER)
+            packet_output_folder = os.path.join(WEBAPP_PATH, DIR_FOR_ALL_SESSIONS, SUBFOLDER_FOR_THIS_SESSION,
+                                                str(EVENT_SUBFOLDER))
+            resources_directory = os.path.join(WEBAPP_PATH, FORMS_FOLDER)
             PacketFactory.generate(personal_history, event, packet_output_folder, resources_directory)
 
-    buf = cStringIO.StringIO()
-    buf.write(str(personal_history))
-    return buf.getvalue()
+    file_name = "expungement_forms_packet"
+    zip_path = "/tmp/" + file_name
+    path_to_zip = shutil.make_archive(zip_path, "zip", PACKET_BASE_FOLDER)
+    response = HttpResponse(FileWrapper(file(path_to_zip, 'rb')), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=' + file_name.replace(" ", "_") + '.zip'
+    return response
 
 
 def download_forms(request):
-    data = _generate_forms(request)
-    response = HttpResponse(data)
+    return _generate_forms(request)
 
-    filename = 'record_expungment_forms.txt'
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
-
-    # set other headers
-    return response

@@ -7,11 +7,11 @@ class CR181Model(FormModel):
 
     @staticmethod
     def get_name():
-        return "cr_180"
+        return "cr181"
 
     @staticmethod
     def get_output_file_name():
-        return "cr_180.pdf"
+        return "cr181.pdf"
 
     @staticmethod
     def get_fields(ph, event):

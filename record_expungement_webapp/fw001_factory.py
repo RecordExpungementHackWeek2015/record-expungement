@@ -1,6 +1,7 @@
 from models import PersonalHistory, StateBenefit, FinancialInfo
 from county_court_info import SanMateoCountyCourt
 from form_util import FormUtil, FormModel
+import pprint
 
 
 class FW001Model(FormModel):
@@ -38,24 +39,26 @@ class FW001Model(FormModel):
         """
         :type fi: FinancialInfo
         """
-        monthly_personal_income_total = sum([source.monthly_income for source in fi.monthly_income_sources])
-        household_income_total = sum([source.gross_monthly_income for source in fi.other_household_wage_earners])
+        pprint.pprint(fi.monthly_income_sources)
+        monthly_personal_income_total = sum([int(source.monthly_income) for source in fi.monthly_income_sources if source.monthly_income])
+        household_income_total = sum([int(source.gross_monthly_income) for source in fi.other_household_wage_earners if source.gross_monthly_income])
         total = monthly_personal_income_total + household_income_total
 
         income_fields = []
         for i, source in enumerate(fi.monthly_income_sources):
-            income_fields.extend([("8a%(i)sa" % {'i': i}, source.job_title),
-                                  ("8a%(i)sb" % {'i': i}, source.monthly_income)])
+            income_fields.extend([("8a%(i)sa" % {'i': i+1}, source.job_title),
+                                  ("8a%(i)sb" % {'i': i+1}, source.monthly_income)])
 
         for i, source in enumerate(fi.other_household_wage_earners):
-            income_fields.extend([("9a%(i)sa" % {'i': i}, source.name),
-                                  ("9a%(i)sb" % {'i': i}, source.age),
-                                  ("9a%(i)sc" % {'i': i}, source.relationship),
-                                  ("9a%(i)sd" % {'i': i}, source.gross_monthly_income)])
+            income_fields.extend([("9a%(i)sa" % {'i': i+1}, source.name),
+                                  ("9a%(i)sb" % {'i': i+1}, source.age),
+                                  ("9a%(i)sc" % {'i': i+1}, source.relationship),
+                                  ("9a%(i)sd" % {'i': i+1}, source.gross_monthly_income)])
 
         income_fields.append(("8b", monthly_personal_income_total))
         income_fields.append(("9b", household_income_total))
         income_fields.append(("8b_9b", total))
+        return income_fields
 
     @staticmethod
     def _money_and_property(fi):
@@ -66,22 +69,24 @@ class FW001Model(FormModel):
         fields = [("10a", mp.total_cash)]
 
         for i, acct in enumerate(mp.bank_accounts):
-            fields.extend([("10b%(i)sa" % {'i': i}, acct.bank_name), ("10b%(i)sv" % {'i': i}, acct.amount)])
+            fields.extend([("10b%(i)sa" % {'i': i+1}, acct.bank_name),
+                           ("10b%(i)sb" % {'i': i+1}, acct.amount)])
 
         for i, vehicle in enumerate(mp.vehicles):
-            fields.extend([("10c%(i)sa" % {'i': i}, vehicle.make_and_year),
-                           ("10c%(i)sb" % {'i': i}, vehicle.asset_value.fair_market_value),
-                           ("10c%(i)sc" % {'i': i}, vehicle.asset_value.amount_still_owed)])
+            fields.extend([("10c%(i)sa" % {'i': i+1}, vehicle.make_and_year),
+                           ("10c%(i)sb" % {'i': i+1}, vehicle.asset_value.fair_market_value),
+                           ("10c%(i)sc" % {'i': i+1}, vehicle.asset_value.amount_still_owed)])
 
         for i, asset in enumerate(mp.real_estate):
-            fields.extend([("10d%(i)sa" % {'i': i}, asset.address.to_str_one_line()),
-                           ("10d%(i)sb" % {'i': i}, asset.asset_value.fair_market_value),
-                           ("10d%(i)sc" % {'i': i}, asset.asset_value.amount_still_owed)])
+            fields.extend([("10d%(i)sa" % {'i': i+1}, asset.address),
+                           ("10d%(i)sb" % {'i': i+1}, asset.asset_value.fair_market_value),
+                           ("10d%(i)sc" % {'i': i+1}, asset.asset_value.amount_still_owed)])
 
         for i, asset in enumerate(mp.other_property):
-            fields.extend([("10e%(i)sa" % {'i': i}, asset.description),
-                           ("10e%(i)sb" % {'i': i}, asset.asset_value.fair_market_value),
-                           ("10f%(i)sc" % {'i': i}, asset.asset_value.amount_still_owed)])
+            fields.extend([("10e%(i)sa" % {'i': i+1}, asset.description),
+                           ("10e%(i)sb" % {'i': i+1}, asset.asset_value.fair_market_value),
+                           ("10e%(i)sc" % {'i': i+1}, asset.asset_value.amount_still_owed)])
+        return fields
 
     @staticmethod
     def _monthly_deductions_and_expenses(fi):
@@ -90,8 +95,8 @@ class FW001Model(FormModel):
 
         md = fi.monthly_deductions_and_expenses
         for i, deduction in enumerate(md.payroll_deduction):
-            descriptions.append(("11a%(i)sa" % {'i': i}, deduction.recipient))
-            dollar_amounts.append(("11a%(i)sb" % {'i': i}, deduction.amount))
+            descriptions.append(("11a%(i)sa" % {'i': i+1}, deduction.recipient))
+            dollar_amounts.append(("11a%(i)sb" % {'i': i+1}, deduction.amount))
 
         dollar_amounts.extend([
             ("11b", md.rent_or_house_payment),
@@ -108,23 +113,23 @@ class FW001Model(FormModel):
         ])
 
         for i, payment in enumerate(md.installment_payments):
-            descriptions.append(("11l%(i)sa" % {'i': i}, payment.recipient))
-            dollar_amounts.append(("11l%(i)sb" % {'i': i}, payment.amount))
+            descriptions.append(("11l%(i)sa" % {'i': i+1}, payment.recipient))
+            dollar_amounts.append(("11l%(i)sb" % {'i': i+1}, payment.amount))
 
         for i, expense in enumerate(md.other_monthly_expenses):
-            descriptions.append(("11n%(i)sa" % {'i': i}, expense.recipient))
-            dollar_amounts.append(("11n%(i)sb" % {'i': i}, expense.amount))
+            descriptions.append(("11n%(i)sa" % {'i': i+1}, expense.recipient))
+            dollar_amounts.append(("11n%(i)sb" % {'i': i+1}, expense.amount))
 
-        total = sum(amount for (label, amount) in dollar_amounts)
+        total = sum(int(amount) for (label, amount) in dollar_amounts if amount)
         return descriptions + dollar_amounts + [("11_total", total)]
 
     @staticmethod
     def get_name():
-        return "cr_180"
+        return "fw001"
 
     @staticmethod
     def get_output_file_name():
-        return "cr_180.pdf"
+        return "fw001.pdf"
 
     @staticmethod
     def get_fields(ph, event):
@@ -133,8 +138,8 @@ class FW001Model(FormModel):
         :type event: Event
         """
         fi = ph.financial_information
-        return [
-            ("1a", ph.name),
+        fields = [
+            ("1a", str(ph.name)),
             ("1b", ph.address.address),
             ("1c", ph.address.city),
             ("1d", ph.address.state),
@@ -143,23 +148,23 @@ class FW001Model(FormModel):
             ("2a", fi.job.job_title),
             ("2b", fi.job.employer_name),
             ("2c", fi.job.employer_address.to_str_one_line()),
-            ("3", "N/A"),  # Lawyer, if person has one
+            ("3a", "N/A"),  # Lawyer, if person has one
             ("4a", True),  # Check 4a but not 4b
-        ].extend(
-            FW001Model._benefits_checks(fi)
-        ).extend(
+        ]
+        fields. extend(FW001Model._benefits_checks(fi))
+        fields.extend(
             [("6a", True)]
-            if fi.event_index_to_whether_fees_have_been_waived_recently(ph.rap_sheet.events.index(event)) else []
-        ).extend(
+            if fi.event_index_to_whether_fees_have_been_waived_recently[ph.rap_sheet.events.index(event)] else []
+        )
+        fields.extend(
             [("7", True)] if fi.income_changes_significantly_month_to_month else []
-        ).extend(
-            FW001Model._monthly_and_household_income(fi)
-        ).extend(
-            FW001Model._money_and_property(fi)
-        ).extend(
-            FW001Model._monthly_deductions_and_expenses(fi)
-        ).extend([
+        )
+        fields.extend(FW001Model._monthly_and_household_income(fi))
+        fields.extend(FW001Model._money_and_property(fi))
+        fields.extend(FW001Model._monthly_deductions_and_expenses(fi))
+        fields.extend([
             ("12", SanMateoCountyCourt.mailing_address_multiline_str()),
             ("13", event.associated_cases[0].case_id),
             ("14", FormUtil.short_case_name(ph, event)),
         ])
+        return fields

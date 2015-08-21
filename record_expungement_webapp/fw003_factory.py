@@ -9,11 +9,11 @@ class FW003Model(FormModel):
 
     @staticmethod
     def get_name():
-        return "cr_180"
+        return "fw003"
 
     @staticmethod
     def get_output_file_name():
-        return "cr_180.pdf"
+        return "fw003.pdf"
 
     @staticmethod
     def get_fields(ph, event):
@@ -22,12 +22,12 @@ class FW003Model(FormModel):
         :type event: Event
         """
         return [
-            ("1a", ph.name,),
+            ("1a", str(ph.name)),
             ("1b", ph.address.address),
             ("1c", ph.address.city),
             ("1d", ph.address.state),
             ("1e", ph.address.zip_code),
-            ("2", "N/A"),  # Lawyer, if person has one
+            #("2", "N/A"),  # Lawyer, if person has one
             ("3", SanMateoCountyCourt.mailing_address_multiline_str()),
             ("4", event.associated_cases[0].case_id),
             ("5", FormUtil.short_case_name(ph, event)),

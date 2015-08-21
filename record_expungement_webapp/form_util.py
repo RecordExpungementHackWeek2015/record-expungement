@@ -1,5 +1,6 @@
 from models import PersonalHistory, Event
 from datetime import datetime
+import pprint
 
 class FormUtil:
     def __init__(self):
@@ -11,11 +12,12 @@ class FormUtil:
 
     @staticmethod
     def date_to_str(date):
-        return date.strftime("%m/%d/%Y")
+        return date.strftime("%m-%d-%Y")
 
     @staticmethod
     def dob_str(ph, event):
         """
+        :rtype : str
         :type ph: PersonalHistory
         :type event: Event
         """
@@ -30,15 +32,24 @@ class FormUtil:
         :type ph: PersonalHistory
         :type event: Event
         """
-        return ph.rap_sheet.names_as_charged[event.arrest_info.name_as_charged_id]
+        pprint.pprint(ph.rap_sheet.names_as_charged)
+        pprint.pprint("INDEX: " + str(event.arrest_info.name_as_charged_id))
+        name = ph.rap_sheet.names_as_charged[event.arrest_info.name_as_charged_id]
+        print str(name)
+        return name
 
     @staticmethod
     def attorney_or_party_without_attorney(ph, event):
         """
+        :rtype : str
         :type ph: PersonalHistory
         :type event: Event
         """
-        return ph.name + " AKA " + FormUtil.event_to_name_as_charged(ph, event) + "\n" + ph.address.to_str_one_line()
+        return FormUtil.full_name(ph, event) + "\n" + ph.address.to_str_one_line()
+
+    @staticmethod
+    def full_name(ph, event):
+        return str(ph.name) + " AKA " + str(FormUtil.event_to_name_as_charged(ph, event))
 
     @staticmethod
     def short_case_name(ph, event):
@@ -61,7 +72,7 @@ class FormUtil:
             ("1c", ph.email),
             ("1d", "Self-Represented"),
             ("1e", ""),  # Fax number
-            ("2a", FormUtil.event_to_name_as_charged(ph, event)),
+            ("2a", str(FormUtil.event_to_name_as_charged(ph, event))),
             ("2b", FormUtil.dob_str(ph, event)),
             ("3", event.associated_cases[0].case_id),
         ]
@@ -73,7 +84,7 @@ class FormUtil:
         :type event: Event
         """
         return [
-            ("7", FormUtil.event_to_name_as_charged(ph, event)),
+            ("7", str(FormUtil.event_to_name_as_charged(ph, event))),
             ("8", event.associated_cases[0].case_id),
 
         ]
@@ -87,6 +98,7 @@ class FormUtil:
         """
         :type field_list: list[tuple[str, str]]
         """
+        pprint.pprint(field_list)
 
         for (label, value) in field_list:
             print "filling " + label
@@ -94,13 +106,15 @@ class FormUtil:
             for field in json_list:
                 if field["name"] == label:
                     filled = True
-                    field["name"] = value
+                    field["value"] = value
 
             assert filled
 
+        #pprint.pprint(json_list)
+
         # CHeck that all fields have been filled second time around - can delete this later
         for (label, value) in field_list:
-            print "filling " + label
+            print "CHECKING FILLED " + label
             filled = False
             for field in json_list:
                 if field["name"] == label:
