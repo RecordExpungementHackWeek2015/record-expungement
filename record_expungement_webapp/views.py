@@ -209,6 +209,8 @@ class PersonalInfoForm(forms.Form):
     name_amount_2_installment_1 = forms.CharField(label='', max_length=10, required=False)
     name_amount_1_installment_2 = forms.CharField(label='', max_length=100, required=False)
     name_amount_2_installment_2 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_installment_3 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_installment_3 = forms.CharField(label='', max_length=10, required=False)
 
     long_wages = forms.CharField(label='Wages withheld by court order', max_length=10, widget=forms.TextInput(attrs={'size': '10'}), required=False)
 
@@ -216,6 +218,8 @@ class PersonalInfoForm(forms.Form):
     name_amount_2_other_1 = forms.CharField(label='', max_length=10, required=False)
     name_amount_1_other_2 = forms.CharField(label='', max_length=100, required=False)
     name_amount_2_other_2 = forms.CharField(label='', max_length=10, required=False)
+    name_amount_1_other_3 = forms.CharField(label='', max_length=100, required=False)
+    name_amount_2_other_3 = forms.CharField(label='', max_length=10, required=False)
 
     _WAIVER_PREFIX = 'waiver_'
     _BENEFIT_PREFIX = 'benefit_'
@@ -238,8 +242,6 @@ class PersonalInfoForm(forms.Form):
         financial_info = self._get_financial_info()
         personal_history = models.PersonalHistory(rap_sheet, name=name, address=address,
             email=email, phone_number=phone_number, financial_info=financial_info)
-        print personal_history.__dict__
-        print
         return personal_history
 
     def _get_financial_info(self):
@@ -262,16 +264,13 @@ class PersonalInfoForm(forms.Form):
         financial_info.total_family_income = self.cleaned_data['family_income']
         financial_info.event_index_to_whether_fees_have_been_waived_recently = self._get_event_to_waiver_status()
         financial_info.income_changes_significantly_month_to_month = self.cleaned_data['income_changes']
-
-        print financial_info.__dict__
-        print
         return financial_info
 
     def _get_monthly_deductions_and_expenses(self):
         mdae = models.MonthlyDeductionsAndExpenses()
 
         payroll_deduction = []
-        for i in (1, 2, 3, 4):
+        for i in xrange(1, 5):
             expense = models.Expense()
             expense.recipient = self.cleaned_data['name_amount_1_payroll_%d' % i]
             expense.amount = self.cleaned_data['name_amount_2_payroll_%d' % i]
@@ -290,51 +289,61 @@ class PersonalInfoForm(forms.Form):
         mdae.child_or_spousal_support = self.cleaned_data['long_child']
         mdae.car_and_transporation = self.cleaned_data['long_transportation']
 
+        installment_payments = []
+        for i in xrange(1, 4):
+            expense = models.Expense()
+            expense.recipient = self.cleaned_data['name_amount_1_installment_%d' % i]
+            expense.amount = self.cleaned_data['name_amount_2_installment_%d' % i]
+            installment_payments.append(expense)
+        mdae.installment_payments = installment_payments
+
+        mdae.wages_witheld_by_court_order = self.cleaned_data['long_wages']
+
+        other_monthly_expenses = []
+        for i in xrange(1, 4):
+            expense = models.Expense()
+            expense.recipient = self.cleaned_data['name_amount_1_other_%d' % i]
+            expense.amount = self.cleaned_data['name_amount_2_other_%d' % i]
+            other_monthly_expenses.append(expense)
+        mdae.other_monthly_expenses = other_monthly_expenses
+
         return mdae
 
     def _get_money_and_property(self):
         total_cash = self.cleaned_data['cash']
 
         bank_accounts = []
-        for i in (1, 2, 3):
+        for i in xrange(1, 4):
             bank_account = models.BankAccount()
             bank_account.bank_name = self.cleaned_data['name_amount_1_bank_%d' % i]
             bank_account.amount = self.cleaned_data['name_amount_2_bank_%d' % i]
-            print bank_account.__dict__
-            print
             bank_accounts.append(bank_account)
 
         vehicles = []
-        for i in (1, 2, 3):
+        for i in xrange(1, 4):
             vehicle = models.Vehicle()
             vehicle.make_and_year = self.cleaned_data['asset_1_vehicle_%d' % i]
             vehicle.asset_value = models.AssetValue()
             vehicle.asset_value.fair_market_value = self.cleaned_data['asset_2_vehicle_%d' % i]
             vehicle.asset_value.amount_still_owed = self.cleaned_data['asset_3_vehicle_%d' % i]
-            print vehicle.__dict__
-            print
             vehicles.append(vehicle)
 
         real_estates = []
-        for i in (1, 2):
+        for i in xrange(1, 3):
             real_estate = models.RealEstate()
             real_estate.address = self.cleaned_data['asset_1_real_estate_%d' % i]
             real_estate.asset_value = models.AssetValue()
             real_estate.asset_value.fair_market_value = self.cleaned_data['asset_2_real_estate_%d' % i]
             real_estate.asset_value.amount_still_owed = self.cleaned_data['asset_3_real_estate_%d' % i]
-            print real_estate.__dict__
-            print
             real_estates.append(real_estate)
 
         other_property = []
-        for i in (1, 2):
+        for i in xrange(1, 3):
             personal_property = models.PersonalProperty()
             personal_property.description = self.cleaned_data['asset_1_other_%d' % i]
             personal_property.asset_value = models.AssetValue()
             personal_property.asset_value.fair_market_value = self.cleaned_data['asset_2_other_%d' % i]
             personal_property.asset_value.amount_still_owed = self.cleaned_data['asset_3_other_%d' % i]
-            print personal_property.__dict__
-            print
             other_property.append(personal_property)
 
         money_and_property = models.MoneyAndProperty()
@@ -347,26 +356,22 @@ class PersonalInfoForm(forms.Form):
 
     def _get_monthly_income_sources(self):
         monthly_income_sources = []
-        for i in (1, 2, 3, 4):
+        for i in xrange(1, 5):
             monthly_income_source = models.MonthlyIncomeSource()
             monthly_income_source.job_title = self.cleaned_data['name_amount_1_monthly_%d' % i]
             monthly_income_source.monthly_income = self.cleaned_data['name_amount_2_monthly_%d' % i]
             monthly_income_sources.append(monthly_income_source)
-            print monthly_income_source.__dict__
-            print
         return monthly_income_sources
 
     def _get_other_household_wage_earners(self):
         other_household_wage_earners = []
-        for i in (1, 2, 3, 4):
+        for i in xrange(1, 5):
             wage_earner = models.WageEarner()
             wage_earner.name = self.cleaned_data['wage_earner_title_%d' % i]
             wage_earner.age = self.cleaned_data['wage_earner_age_%d' % i]
             wage_earner.relationship = self.cleaned_data['wage_earner_relationship_%d' % i]
             wage_earner.gross_monthly_income = self.cleaned_data['wage_earner_amount_%d' % i]
             other_household_wage_earners.append(wage_earner)
-            print wage_earner.__dict__
-            print
         return other_household_wage_earners
 
     # Get zipped list of event to waiver field.
@@ -431,7 +436,6 @@ def success(request):
 
 
 def _generate_forms(request):
-
     personal_history = pickle.loads(request.session['personal_history'])
 
     DIR_FOR_ALL_SESSIONS = "outputs"
